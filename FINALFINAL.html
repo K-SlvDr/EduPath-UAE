@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPath UAE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --fd:#0c1a0d;--fm:#162b18;--fp:#1c3620;--fmu:#2e5435;
+  --sand:#c9a96e;--sl:#dfc08a;--sp:#f0e0c0;
+  --t1:#f0e6d3;--t2:#a4b8a0;--t3:#6b8a6b;
+  --br:rgba(201,169,110,0.18);--brh:rgba(201,169,110,0.45);
+  --card:rgba(22,43,24,0.75);--inp:rgba(12,26,13,0.9);
+  --sh:0 8px 40px rgba(0,0,0,0.45);--r:11px;
+  /* stat card overrides */
+  --sc-bg:#f0e0c0;--sc-txt:#1c3620;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Source Sans 3',sans-serif;background:var(--fd);color:var(--t1);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+h1,h2,h3,h4{font-family:'EB Garamond',Georgia,serif;font-weight:600;line-height:1.15}
+.page{display:none;flex-direction:column;min-height:100vh;position:relative;z-index:1}
+.page.active{display:flex}
+
+/* Loading */
+#ls{position:fixed;inset:0;background:var(--fd);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+#ls.gone{opacity:0;pointer-events:none}
+.ll{font-family:'EB Garamond',serif;font-size:1.9rem;color:var(--sand);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.amb{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 75% 15%,rgba(46,84,53,0.13) 0%,transparent 65%),radial-gradient(ellipse 40% 35% at 15% 85%,rgba(201,169,110,0.045) 0%,transparent 55%)}
+
+/* Nav */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(12,26,13,.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--br);position:sticky;top:0;z-index:200;flex-shrink:0}
+.logo{font-family:'EB Garamond',serif;font-size:1.45rem;font-weight:700;color:var(--sand);letter-spacing:.02em;cursor:pointer;border:none;background:none}
+.logo span{color:var(--t1);font-weight:400}
+.nr{display:flex;align-items:center;gap:10px}
+.bg2{background:transparent;border:1px solid var(--br);color:var(--t2);padding:7px 18px;border-radius:8px;font-family:'Source Sans 3',sans-serif;font-size:.875rem;cursor:pointer;transition:all .2s}
+.bg2:hover{border-color:var(--sand);color:var(--sand)}
+.bs{background:var(--sand);border:none;color:var(--fd);padding:8px 20px;border-radius:8px;font-family:'Source Sans 3',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s}
+.bs:hover{background:var(--sl);transform:translateY(-1px)}
+.bs:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.nu{display:flex;align-items:center;gap:10px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--fp);border:1.5px solid var(--sand);display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',serif;font-size:.85rem;color:var(--sand);font-weight:700;cursor:pointer;overflow:hidden;flex-shrink:0}
+.av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.nn{font-size:.875rem;color:var(--t2)}
+.bt{background:none;border:none;color:var(--t3);font-size:.82rem;cursor:pointer;padding:4px 8px;border-radius:6px;font-family:'Source Sans 3',sans-serif;transition:color .2s}
+.bt:hover{color:var(--sand)}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);backdrop-filter:blur(8px)}
+.card-h{transition:border-color .2s,transform .2s}.card-h:hover{border-color:var(--brh);transform:translateY(-2px)}
+
+/* Inputs */
+input,select,textarea{width:100%;background:var(--inp);border:1px solid var(--br);color:var(--t1);padding:10px 13px;border-radius:9px;font-family:'Source Sans 3',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+input::placeholder,textarea::placeholder{color:rgba(164,184,160,.35)}
+input:focus,select:focus,textarea:focus{border-color:var(--sand);box-shadow:0 0 0 3px rgba(201,169,110,.1)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a4b8a0'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:32px}
+select option{background:var(--fm)}
+.fl{display:block;font-size:.8rem;color:var(--t2);margin-bottom:6px;letter-spacing:.04em}
+.fg{margin-bottom:16px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Option rows */
+.opt{display:flex;align-items:flex-start;gap:13px;background:var(--inp);border:1px solid var(--br);border-radius:9px;padding:11px 15px;cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
+.opt:hover{border-color:var(--brh);background:rgba(22,43,24,.9)}
+.opt.sel{border-color:var(--sand);background:rgba(201,169,110,.07)}
+.ob{width:17px;height:17px;border:1.5px solid var(--br);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:.7rem;color:var(--fd);margin-top:2px}
+.opt.sel .ob{background:var(--sand);border-color:var(--sand)}
+.ob.c{border-radius:50%}
+.ot{font-size:.86rem;color:var(--t1);line-height:1.4}
+.ot strong{color:var(--sand);display:block;font-size:.82rem;margin-bottom:1px}
+.og{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.oc{display:flex;flex-direction:column;gap:9px}
+
+/* Buttons */
+.bf{width:100%;padding:12px;font-size:.92rem;margin-top:4px}
+.bl{padding:13px 30px;font-size:.97rem;border-radius:10px}
+.bo{background:transparent;border:1px solid var(--br);color:var(--t2);padding:11px 24px;border-radius:9px;cursor:pointer;font-size:.88rem;font-family:'Source Sans 3',sans-serif;transition:all .2s}
+.bo:hover{border-color:var(--t2);color:var(--t1)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .55s ease forwards}
+.d1{animation-delay:.08s;opacity:0}.d2{animation-delay:.18s;opacity:0}.d3{animation-delay:.3s;opacity:0}.d4{animation-delay:.44s;opacity:0}
+
+/* Toast */
+#toast{position:fixed;bottom:28px;right:28px;background:var(--fp);border:1px solid var(--br);color:var(--t1);padding:11px 18px;border-radius:10px;font-size:.85rem;box-shadow:var(--sh);opacity:0;transform:translateY(8px);transition:all .3s;z-index:9000;pointer-events:none;max-width:320px}
+#toast.show{opacity:1;transform:translateY(0)}
+#toast.ok{border-color:rgba(100,200,100,.4)}
+#toast.err{border-color:rgba(200,80,80,.5);color:#f88}
+.em{background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.35);color:#f99;padding:10px 14px;border-radius:8px;font-size:.85rem;margin-bottom:14px;display:none}
+.em.show{display:block}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(12,26,13,.4);border-top-color:var(--fd);border-radius:50%;animation:rot .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* Footer */
+footer{border-top:1px solid var(--br);padding:18px 48px;display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--t3);flex-shrink:0;position:relative;z-index:1}
+footer .lsm{font-family:'EB Garamond',serif;color:var(--sand);font-size:.92rem}
+
+/* ══ LANDING ══ */
+#landing .body{flex:1;display:grid;grid-template-columns:1fr 400px;gap:48px;align-items:center;max-width:1160px;margin:0 auto;padding:72px 48px}
+.hl{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--sand);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.hl::before{content:'';width:28px;height:1px;background:var(--sand)}
+h1.hero{font-size:clamp(2.6rem,4.5vw,4rem);color:var(--t1);margin-bottom:20px}
+h1.hero em{color:var(--sand);font-style:italic}
+.hd{font-size:1rem;color:var(--t2);line-height:1.75;max-width:500px;margin-bottom:32px}
+.hb{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:44px}
+.hp{display:flex;gap:14px;flex-wrap:wrap}
+.pill{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--br);padding:10px 16px;border-radius:9px;font-size:.82rem;color:var(--t2)}
+.pc{background:linear-gradient(145deg,rgba(28,54,32,.92),rgba(12,26,13,.98));border:1px solid var(--br);border-radius:15px;padding:26px;box-shadow:var(--sh)}
+.pcl{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:14px}
+.pt3{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:1px solid var(--br);margin-bottom:18px}
+.pcar{font-family:'EB Garamond',serif;font-size:1.2rem}
+.ppct strong{font-family:'EB Garamond',serif;font-size:2.6rem;color:var(--sand);display:block;line-height:1}
+.ppct span{font-size:.78rem;color:var(--t3)}
+.bi{margin-bottom:10px}
+.bn3{display:flex;justify-content:space-between;font-size:.8rem;color:var(--t2);margin-bottom:5px}
+.bn3 span:last-child{color:var(--sand);font-weight:600}
+.btr{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.bfl{height:100%;background:linear-gradient(90deg,var(--fmu),var(--sand));border-radius:3px}
+
+/* ══ AUTH ══ */
+.aw{flex:1;display:grid;grid-template-columns:1fr 460px}
+.al{background:linear-gradient(135deg,var(--fm),var(--fd));border-right:1px solid var(--br);padding:64px 56px;display:flex;flex-direction:column;justify-content:center}
+.at{font-size:2.3rem;color:var(--t1);margin-bottom:14px}
+.at em{color:var(--sand);font-style:italic}
+.as2{color:var(--t2);font-size:.92rem;line-height:1.72;max-width:360px;margin-bottom:36px}
+.af{display:flex;flex-direction:column;gap:18px}
+.afi{display:flex;align-items:flex-start;gap:14px}
+.afic{width:38px;height:38px;flex-shrink:0;background:var(--fp);border:1px solid var(--br);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.afit strong{display:block;font-size:.88rem;color:var(--t1);font-weight:600;margin-bottom:2px}
+.afit span{font-size:.8rem;color:var(--t3)}
+.ar{display:flex;align-items:center;justify-content:center;padding:48px 40px;background:var(--fd)}
+.ab{width:100%;max-width:360px}
+.ab h3{font-size:1.85rem;color:var(--t1);margin-bottom:4px}
+.ah{font-size:.85rem;color:var(--t3);margin-bottom:28px}
+.asw{text-align:center;margin-top:18px;font-size:.83rem;color:var(--t3)}
+.asw a{color:var(--sand);cursor:pointer}.asw a:hover{text-decoration:underline}
+.fg2{float:right;font-size:.78rem;color:var(--sand);background:none;border:none;cursor:pointer}
+.fg2:hover{text-decoration:underline}
+
+/* Reset password modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:5000;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--fm);border:1px solid var(--br);border-radius:14px;padding:32px;width:100%;max-width:400px;position:relative}
+.modal h3{font-size:1.5rem;margin-bottom:8px}
+.modal p{color:var(--t2);font-size:.88rem;margin-bottom:20px;line-height:1.6}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--t3);font-size:1.2rem;cursor:pointer}
+.modal-close:hover{color:var(--t1)}
+
+/* Profile picture upload */
+.pfp-wrap{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.pfp-preview{width:72px;height:72px;border-radius:50%;background:var(--fp);border:2px solid var(--br);display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',serif;font-size:1.6rem;color:var(--sand);overflow:hidden;flex-shrink:0;cursor:pointer;position:relative}
+.pfp-preview img{width:100%;height:100%;object-fit:cover}
+.pfp-preview:hover::after{content:'📷';position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:1.3rem;border-radius:50%}
+.pfp-info p{font-size:.82rem;color:var(--t3);margin-top:4px}
+#pfp-input{display:none}
+.btn-pfp{background:transparent;border:1px solid var(--br);color:var(--t2);padding:7px 16px;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:all .2s}
+.btn-pfp:hover{border-color:var(--sand);color:var(--sand)}
+
+/* ══ DASHBOARD ══ */
+#dashboard .body{flex:1;max-width:1060px;margin:0 auto;padding:44px 48px;width:100%}
+.dw{margin-bottom:32px}
+.dw h2{font-size:2rem}.dw p{color:var(--t2);font-size:.92rem;margin-top:4px}
+/* stat cards — beige bg, green text */
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:28px}
+.sc{padding:22px 24px;background:var(--sc-bg)!important;border-color:rgba(46,84,53,0.3)!important}
+.sl2{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sc-txt);margin-bottom:8px;opacity:.7}
+.sv{font-family:'EB Garamond',serif;font-size:2.4rem;color:var(--sc-txt);line-height:1}
+.ss{font-size:.78rem;color:var(--sc-txt);margin-top:5px;opacity:.65}
+.bn2{display:inline-flex;align-items:center;gap:8px;background:var(--sand);color:var(--fd);border:none;padding:11px 24px;border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:30px}
+.bn2:hover{background:var(--sl);transform:translateY(-1px)}
+.sh{font-family:'EB Garamond',serif;font-size:1.3rem;margin-bottom:14px;color:var(--t1)}
+.al2{display:flex;flex-direction:column;gap:12px}
+.ar2{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s}
+.ar2:hover{border-color:var(--brh)}
+.ad{font-size:.75rem;color:var(--t3);margin-bottom:3px}
+.ac{font-family:'EB Garamond',serif;font-size:1.05rem}
+.arp{display:flex;align-items:center;gap:12px}
+.pp{background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.28);color:var(--sand);padding:4px 11px;border-radius:20px;font-size:.82rem;font-weight:600}
+.bsm{background:transparent;border:1px solid var(--br);color:var(--t2);padding:6px 14px;border-radius:7px;font-size:.8rem;cursor:pointer;font-family:'Source Sans 3',sans-serif;transition:all .2s}
+.bsm:hover{border-color:var(--sand);color:var(--sand)}
+.es{text-align:center;padding:48px 24px;color:var(--t3)}
+
+/* ══ ASSESSMENT ══ */
+#assessment .body{flex:1;max-width:760px;margin:0 auto;padding:44px 48px;width:100%}
+.pw{display:flex;align-items:center;margin-bottom:44px;overflow-x:auto;padding-bottom:4px}
+.sn2{display:flex;align-items:center;flex-shrink:0}
+.sd{width:28px;height:28px;border-radius:50%;border:2px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--t3);font-weight:600;flex-shrink:0;transition:all .3s;font-family:'Source Sans 3',sans-serif}
+.sd.act{border-color:var(--sand);color:var(--sand);background:rgba(201,169,110,.08)}
+.sd.dn{border-color:var(--fmu);background:var(--fmu);color:var(--sand);font-size:.68rem}
+.snm{font-size:.72rem;color:var(--t3);margin-left:7px;white-space:nowrap}
+.snm.act{color:var(--sand)}
+.sl3{flex:1;height:1px;background:var(--br);margin:0 8px;transition:background .3s;min-width:16px}
+.sl3.dn{background:var(--fmu)}
+.pan{display:none}
+.pan.act{display:block}
+.pt2{font-size:1.7rem;margin-bottom:5px}
+.ps{color:var(--t2);font-size:.88rem;margin-bottom:30px}
+.qb{margin-bottom:24px}
+.ql{font-size:.92rem;font-weight:600;color:var(--t1);margin-bottom:3px}
+.ql-hint{font-size:.78rem;color:var(--t3);margin-bottom:10px}
+.pa{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:22px;border-top:1px solid var(--br)}
+
+/* Subject grade rows */
+.subj-row{display:flex;align-items:center;gap:10px;background:var(--inp);border:1px solid var(--br);border-radius:9px;padding:10px 14px;margin-bottom:8px}
+.subj-chk{width:17px;height:17px;border:1.5px solid var(--br);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;font-size:.7rem;color:var(--fd);transition:all .2s}
+.subj-chk.on{background:var(--sand);border-color:var(--sand)}
+.subj-name{flex:1;font-size:.88rem;color:var(--t1);cursor:pointer}
+.subj-grade{width:140px;background:var(--fp);border:1px solid var(--br);color:var(--t1);padding:6px 10px;border-radius:7px;font-size:.82rem;font-family:'Source Sans 3',sans-serif;outline:none;flex-shrink:0}
+.subj-grade:focus{border-color:var(--sand)}
+.subj-grade option{background:var(--fm)}
+
+/* ══ RESULTS ══ */
+#results .body{flex:1;max-width:960px;margin:0 auto;padding:44px 48px;width:100%}
+.rh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px}
+.rt{font-size:1.95rem;margin-bottom:4px}
+.rm{font-size:.82rem;color:var(--t3)}
+.rbtns{display:flex;gap:10px;flex-wrap:wrap}
+.btn-dl{display:flex;align-items:center;gap:7px;background:transparent;border:1px solid var(--br);color:var(--t2);padding:9px 18px;border-radius:9px;cursor:pointer;font-family:'Source Sans 3',sans-serif;font-size:.84rem;transition:all .2s}
+.btn-dl:hover{border-color:var(--sand);color:var(--sand)}
+
+/* Definitive career banner */
+.def-career{background:linear-gradient(135deg,rgba(201,169,110,.15),rgba(46,84,53,.3));border:1px solid rgba(201,169,110,.4);border-radius:14px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;gap:20px}
+.def-label{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sand);margin-bottom:4px}
+.def-career-name{font-family:'EB Garamond',serif;font-size:1.6rem;color:var(--t1)}
+.def-badge{background:var(--sand);color:var(--fd);font-family:'EB Garamond',serif;font-size:2rem;font-weight:700;padding:10px 18px;border-radius:10px;white-space:nowrap}
+
+.rg{display:grid;grid-template-columns:220px 1fr;gap:20px;margin-bottom:20px}
+.tc{background:linear-gradient(155deg,rgba(46,84,53,.35),rgba(12,26,13,.95));border:1px solid rgba(201,169,110,.3);border-radius:var(--r);padding:24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.tp{font-family:'EB Garamond',serif;font-size:4rem;color:var(--sand);line-height:1}
+.tpl{font-size:.7rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
+.tcar{font-family:'EB Garamond',serif;font-size:1.1rem;margin-top:4px}
+.rks{display:flex;flex-direction:column;gap:9px}
+.rr{padding:13px 18px}
+.rrh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.rrn{font-family:'EB Garamond',serif;font-size:.96rem}
+.rrp{color:var(--sand);font-weight:600;font-size:.84rem}
+.rb{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden}
+.rf{height:100%;background:linear-gradient(90deg,var(--fmu),var(--sand));border-radius:2px;transition:width 1.2s ease}
+
+/* Pie chart */
+.pie-wrap{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.pie-title{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:12px}
+#pieCanvas{border-radius:50%}
+.pie-legend{display:flex;flex-direction:column;gap:7px;flex:1;min-width:160px}
+.legend-item{display:flex;align-items:center;gap:9px;font-size:.8rem;color:var(--t2)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Insights */
+.ir{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.ic{padding:20px 22px}
+.il{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:9px}
+.ib{font-size:.86rem;color:var(--t2);line-height:1.68}
+.ib strong{color:var(--t1)}
+.tgs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.tg{background:rgba(201,169,110,.09);border:1px solid rgba(201,169,110,.22);color:var(--sand);padding:3px 11px;border-radius:20px;font-size:.78rem}
+
+/* Uni suggestions */
+.uni-section{margin-bottom:20px}
+.uni-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.uni-col{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:16px 18px}
+.uni-col-label{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;font-weight:700}
+.uni-col-label.reach{color:#e8745a}
+.uni-col-label.target{color:var(--sand)}
+.uni-col-label.safety{color:#7ab87a}
+.uni-item{font-size:.84rem;color:var(--t2);padding:5px 0;border-bottom:1px solid rgba(201,169,110,.08)}
+.uni-item:last-child{border-bottom:none}
+.uni-item span{font-size:.75rem;color:var(--t3);display:block}
+
+/* Profile section */
+.profile-sect{margin-bottom:20px}
+.profile-grid{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start}
+.profile-big-av{width:90px;height:90px;border-radius:50%;background:var(--fp);border:2px solid var(--sand);display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',serif;font-size:2rem;color:var(--sand);overflow:hidden;cursor:pointer;position:relative;flex-shrink:0}
+.profile-big-av img{width:100%;height:100%;object-fit:cover}
+.profile-big-av:hover::after{content:'Change Photo';position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-family:'Source Sans 3',sans-serif;border-radius:50%}
+.profile-info h3{font-size:1.4rem;margin-bottom:4px}
+.profile-info p{color:var(--t2);font-size:.88rem}
+.profile-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+.rac{display:flex;gap:12px;flex-wrap:wrap;margin-top:4px}
+
+/* Responsive */
+@media(max-width:900px){
+  nav{padding:0 20px}
+  #landing .body{grid-template-columns:1fr;padding:48px 20px}
+  .pc{display:none}
+  .aw{grid-template-columns:1fr}
+  .al{display:none}
+  .ar{padding:40px 20px}
+  #dashboard .body,#assessment .body,#results .body{padding:28px 20px}
+  .sr{grid-template-columns:1fr 1fr}
+  .rg{grid-template-columns:1fr}
+  .ir{grid-template-columns:1fr}
+  .uni-grid{grid-template-columns:1fr}
+  .og{grid-template-columns:1fr}
+  .fr{grid-template-columns:1fr}
+  .pw{gap:4px}
+  .snm{display:none}
+  footer{flex-direction:column;gap:6px;text-align:center;padding:16px 20px}
+}
+</style>
+</head>
+<body>
+<div class="amb"></div>
+<div id="ls"><div class="ll">EduPath UAE</div></div>
+<div id="toast"></div>
+
+<!-- Reset Password Modal -->
+<div class="modal-bg" id="reset-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reset-modal')">✕</button>
+    <h3>Reset Password</h3>
+    <p>Enter your new password below. You were automatically signed in via the reset link.</p>
+    <div class="em" id="rp-err"></div>
+    <div class="fg"><label class="fl">New Password</label><input type="password" id="rp-new" placeholder="At least 6 characters"></div>
+    <div class="fg"><label class="fl">Confirm Password</label><input type="password" id="rp-confirm" placeholder="Repeat new password"></div>
+    <button class="bs bf" id="rp-btn" onclick="doResetPassword()">Update Password</button>
+  </div>
+</div>
+
+<!-- ══ LANDING ══ -->
+<div id="landing" class="page">
+  <nav>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>UAE</span></button>
+    <div class="nr">
+      <button class="bg2" onclick="goTo('login')">Log in</button>
+      <button class="bs" onclick="goTo('signup')">Sign up free</button>
+    </div>
+  </nav>
+  <div class="body">
+    <div>
+      <p class="hl fu">AI-Powered Career Guidance</p>
+      <h1 class="hero fu d1">Discover the career <em>built for you.</em></h1>
+      <p class="hd fu d2">EduPath UAE uses intelligent analysis to match your academic profile, strengths, and personality to the career where you'll truly thrive — designed for UAE students.</p>
+      <div class="hb fu d3">
+        <button class="bs bl" onclick="goTo('signup')">Get Started Free →</button>
+        <button class="bo bl" onclick="goTo('login')">Log in</button>
+      </div>
+      <div class="hp fu d4">
+        <div class="pill">🎯 AI-Powered Matching</div>
+        <div class="pill">🇦🇪 Built for UAE Students</div>
+        <div class="pill">📊 Evidence-Based Results</div>
+      </div>
+    </div>
+    <div class="pc fu d2">
+      <div class="pcl">Sample Career Match</div>
+      <div class="pt3"><div class="pcar">Biomedical Engineering</div><div class="ppct"><strong>91%</strong><span>match score</span></div></div>
+      <div class="bi"><div class="bn3"><span>Biomedical Engineering</span><span>91%</span></div><div class="btr"><div class="bfl" style="width:91%"></div></div></div>
+      <div class="bi"><div class="bn3"><span>Medicine & Surgery</span><span>74%</span></div><div class="btr"><div class="bfl" style="width:74%"></div></div></div>
+      <div class="bi"><div class="bn3"><span>Research Science</span><span>61%</span></div><div class="btr"><div class="bfl" style="width:61%"></div></div></div>
+      <div class="bi"><div class="bn3"><span>Data Science</span><span>48%</span></div><div class="btr"><div class="bfl" style="width:48%"></div></div></div>
+      <div class="bi"><div class="bn3"><span>Architecture</span><span>33%</span></div><div class="btr"><div class="bfl" style="width:33%"></div></div></div>
+    </div>
+  </div>
+  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE · All rights reserved</span><span>Empowering students across the Emirates</span></footer>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div id="login" class="page">
+  <nav>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>UAE</span></button>
+    <div class="nr"><button class="bg2" onclick="goTo('signup')">Create account</button></div>
+  </nav>
+  <div class="aw">
+    <div class="al">
+      <h2 class="at">Find your path.<br><em>Own your future.</em></h2>
+      <p class="as2">AI-powered career matching for ambitious UAE students. Understand your strengths and unlock the career you're built for.</p>
+      <div class="af">
+        <div class="afi"><div class="afic">🎯</div><div class="afit"><strong>Personalised Analysis</strong><span>Tailored to your full academic and personality profile</span></div></div>
+        <div class="afi"><div class="afic">📈</div><div class="afit"><strong>Track Progress</strong><span>Compare assessments over time as you grow</span></div></div>
+        <div class="afi"><div class="afic">🇦🇪</div><div class="afit"><strong>UAE-Focused</strong><span>Matched to the regional job market and universities</span></div></div>
+      </div>
+    </div>
+    <div class="ar">
+      <div class="ab">
+        <h3>Welcome back</h3>
+        <p class="ah">Log in to continue your career journey</p>
+        <div id="le" class="em"></div>
+        <div class="fg"><label class="fl">Email address</label><input type="email" id="li-e" placeholder="you@email.com"></div>
+        <div class="fg"><label class="fl">Password <button class="fg2" onclick="openForgot()">Forgot password?</button></label><input type="password" id="li-p" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="bs bf" id="li-btn" onclick="doLogin()">Log in</button>
+        <div class="asw">New here? <a onclick="goTo('signup')">Create a free account</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SIGNUP ══ -->
+<div id="signup" class="page">
+  <nav>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>UAE</span></button>
+    <div class="nr"><button class="bg2" onclick="goTo('login')">Log in</button></div>
+  </nav>
+  <div class="aw">
+    <div class="al">
+      <h2 class="at">Your career journey<br><em>starts here.</em></h2>
+      <p class="as2">Join students across the UAE who've discovered their ideal career path using EduPath's intelligent assessment platform.</p>
+      <div class="af">
+        <div class="afi"><div class="afic">⚡</div><div class="afit"><strong>Quick Setup</strong><span>Complete your profile in under 2 minutes</span></div></div>
+        <div class="afi"><div class="afic">🔒</div><div class="afit"><strong>Secure & Private</strong><span>Your data is encrypted and never shared</span></div></div>
+        <div class="afi"><div class="afic">🎓</div><div class="afit"><strong>Free for Students</strong><span>Full access to all assessments at no cost</span></div></div>
+      </div>
+    </div>
+    <div class="ar">
+      <div class="ab">
+        <h3>Create your account</h3>
+        <p class="ah">Start your personalised career journey today</p>
+        <div id="se" class="em"></div>
+        <!-- Profile picture upload -->
+        <div class="pfp-wrap">
+          <div class="pfp-preview" id="su-pfp-prev" onclick="document.getElementById('pfp-input').click()">
+            <span id="su-pfp-initials">📷</span>
+          </div>
+          <div>
+            <button class="btn-pfp" onclick="document.getElementById('pfp-input').click()">Upload Photo</button>
+            <p>Optional · JPG or PNG</p>
+          </div>
+          <input type="file" id="pfp-input" accept="image/*" onchange="previewPfp(this)">
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">First name</label><input type="text" id="su-f" placeholder="Ahmed" oninput="updatePfpInitials()"></div>
+          <div class="fg"><label class="fl">Last name</label><input type="text" id="su-l" placeholder="Al Mansoori"></div>
+        </div>
+        <div class="fg"><label class="fl">Email address</label><input type="email" id="su-e" placeholder="you@email.com"></div>
+        <div class="fg"><label class="fl">School / Institution</label><input type="text" id="su-s" placeholder="e.g. GEMS Wellington Academy"></div>
+        <div class="fg">
+          <label class="fl">Current grade / year</label>
+          <select id="su-g">
+            <option value="">Select grade...</option>
+            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+            <option>Foundation Year</option><option>Year 1 University</option><option>Year 2+ University</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Password</label><input type="password" id="su-p" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')doSignup()"></div>
+        <button class="bs bf" id="su-btn" onclick="doSignup()">Create Free Account</button>
+        <div class="asw">Already have an account? <a onclick="goTo('login')">Log in</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashboard" class="page">
+  <nav>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>UAE</span></button>
+    <div class="nu">
+      <span class="nn" id="d-nn"></span>
+      <div class="av" id="d-av" onclick="goTo('profile-settings')"></div>
+      <button class="bt" onclick="goTo('profile-settings')">Profile</button>
+      <button class="bt" onclick="doLogout()">Log out</button>
+    </div>
+  </nav>
+  <div class="body">
+    <div class="dw fu"><h2>Welcome back, <span id="d-fn"></span></h2><p>Ready to discover your next career path?</p></div>
+    <div class="sr fu d1">
+      <div class="card sc"><div class="sl2">Assessments Taken</div><div class="sv" id="s-cnt">0</div><div class="ss">Lifetime total</div></div>
+      <div class="card sc"><div class="sl2">Best Match Score</div><div class="sv" id="s-best">—</div><div class="ss" id="s-bc">Start an assessment</div></div>
+      <div class="card sc"><div class="sl2">Last Assessment</div><div class="sv" id="s-last" style="font-size:1.4rem">—</div><div class="ss" id="s-ld">No assessments yet</div></div>
+    </div>
+    <button class="bn2 fu d2" onclick="goTo('assessment')">+ Start New Assessment</button>
+    <div class="fu d3">
+      <div class="sh">Past Assessments</div>
+      <div class="al2" id="al"></div>
+    </div>
+  </div>
+  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE</span><span>Empowering students across the Emirates</span></footer>
+</div>
+
+<!-- ══ PROFILE SETTINGS ══ -->
+<div id="profile-settings" class="page">
+  <nav>
+    <button class="logo" onclick="goTo('dashboard')">EduPath <span>UAE</span></button>
+    <div class="nu">
+      <div class="av" id="ps-av"></div>
+      <button class="bt" onclick="doLogout()">Log out</button>
+    </div>
+  </nav>
+  <div style="flex:1;max-width:560px;margin:0 auto;padding:44px 48px;width:100%">
+    <h2 style="font-size:1.9rem;margin-bottom:6px">Profile Settings</h2>
+    <p style="color:var(--t2);font-size:.9rem;margin-bottom:32px">Update your personal details and photo</p>
+    <div class="em" id="ps-err"></div>
+    <div class="pfp-wrap" style="margin-bottom:28px">
+      <div class="profile-big-av" id="ps-pfp-prev" onclick="document.getElementById('ps-pfp-input').click()">
+        <span id="ps-pfp-initials"></span>
+      </div>
+      <div>
+        <button class="btn-pfp" onclick="document.getElementById('ps-pfp-input').click()">Change Photo</button>
+        <p style="font-size:.78rem;color:var(--t3);margin-top:4px">JPG or PNG, max 2MB</p>
+      </div>
+      <input type="file" id="ps-pfp-input" accept="image/*" onchange="previewSettingsPfp(this)">
+    </div>
+    <div class="fr fg"><div class="fg"><label class="fl">First name</label><input type="text" id="ps-f"></div><div class="fg"><label class="fl">Last name</label><input type="text" id="ps-l"></div></div>
+    <div class="fg"><label class="fl">School / Institution</label><input type="text" id="ps-s"></div>
+    <div class="fg"><label class="fl">Grade / Year</label><select id="ps-g"><option value="">Select grade...</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option><option>Foundation Year</option><option>Year 1 University</option><option>Year 2+ University</option></select></div>
+    <button class="bs" style="padding:11px 28px" id="ps-btn" onclick="saveProfile()">Save Changes</button>
+    <button class="bo" style="padding:11px 24px;margin-left:10px" onclick="goTo('dashboard')">Cancel</button>
+  </div>
+  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE</span><span></span></footer>
+</div>
+
+<!-- ══ ASSESSMENT (4 steps) ══ -->
+<div id="assessment" class="page">
+  <nav>
+    <button class="logo" onclick="goTo('dashboard')">EduPath <span>UAE</span></button>
+    <div class="nu"><span class="nn" id="a-nn"></span><div class="av" id="a-av"></div><button class="bt" onclick="doLogout()">Log out</button></div>
+  </nav>
+  <div class="body">
+    <!-- Step progress bar -->
+    <div class="pw">
+      <div class="sn2"><div class="sd act" id="sd1">1</div><span class="snm act" id="sn1">Academic</span></div>
+      <div class="sl3" id="sl1"></div>
+      <div class="sn2"><div class="sd" id="sd2">2</div><span class="snm" id="sn2">Portfolio</span></div>
+      <div class="sl3" id="sl2"></div>
+      <div class="sn2"><div class="sd" id="sd3">3</div><span class="snm" id="sn3">Personality</span></div>
+      <div class="sl3" id="sl3"></div>
+      <div class="sn2"><div class="sd" id="sd4">4</div><span class="snm" id="sn4">Career Vision</span></div>
+    </div>
+
+    <!-- ═ STEP 1: ACADEMIC ═ -->
+    <div class="pan act" id="p1">
+      <h2 class="pt2">Your Academic Profile</h2>
+      <p class="ps">Tell us about your studies, subjects, and learning style.</p>
+
+      <div class="qb">
+        <div class="ql">What curriculum are you following?</div>
+        <div class="fg"><select id="q-cur">
+          <option value="">Select curriculum...</option>
+          <option>British (A-Levels / IGCSEs)</option>
+          <option>American (AP / SAT)</option>
+          <option>IB (International Baccalaureate)</option>
+          <option>UAE National Curriculum</option>
+          <option>Indian (CBSE)</option>
+          <option>Indian (ICSE / ISC)</option>
+          <option>Filipino (DepEd K-12)</option>
+          <option>French Baccalaureate</option>
+          <option>German Abitur</option>
+          <option>Australian (ATAR)</option>
+          <option>Canadian (Provincial)</option>
+          <option>Other</option>
+        </select></div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">What grading system applies to you?</div>
+        <div class="fg"><select id="q-grading">
+          <option value="">Select grading system...</option>
+          <option>Letter Grades (A–F)</option>
+          <option>GPA (4.0 Scale — Unweighted)</option>
+          <option>GPA (4.0 Scale — Weighted)</option>
+          <option>Percentage (0–100%)</option>
+          <option>CGPA (10-point Scale)</option>
+          <option>IB Points (1–45)</option>
+          <option>A-Level Grades (A*–U)</option>
+          <option>Marks out of 100 (Board Exams)</option>
+        </select></div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Your subjects and individual grades</div>
+        <div class="ql-hint">Check a subject to include it, then select your grade for it.</div>
+        <div id="subj-list"></div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">How would you describe your academic performance?</div>
+        <div class="ql-hint">Specialist vs. All-Rounder</div>
+        <div class="oc">
+          <div class="opt" data-g="spectype" data-v="Specialist" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Specialist</strong> Exceptional in one area, average in others.</span></div>
+          <div class="opt" data-g="spectype" data-v="All-Rounder" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The All-Rounder</strong> Consistently high across almost all subjects.</span></div>
+          <div class="opt" data-g="spectype" data-v="Practical Learner" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Practical Learner</strong> Better in labs, workshops, and projects than theory exams.</span></div>
+          <div class="opt" data-g="spectype" data-v="Rising Star" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Rising Star</strong> Average early grades but a strong upward trend recently.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">When you encounter a difficult concept, what do you typically do?</div>
+        <div class="ql-hint">Intellectual Endurance</div>
+        <div class="oc">
+          <div class="opt" data-g="endure" data-v="Researcher" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Researcher</strong> I independently research until it makes sense.</span></div>
+          <div class="opt" data-g="endure" data-v="Collaborator" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Collaborator</strong> I immediately seek a teacher, tutor, or peer.</span></div>
+          <div class="opt" data-g="endure" data-v="Pragmatist" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Pragmatist</strong> I find the real-world application to understand why it matters.</span></div>
+          <div class="opt" data-g="endure" data-v="Efficiency-Seeker" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Efficiency-Seeker</strong> I memorise what I need for the exam and move on.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">In which type of evaluation is your intelligence best reflected?</div>
+        <div class="ql-hint">Assessment Preference</div>
+        <div class="oc">
+          <div class="opt" data-g="assespref" data-v="High-Stakes Exams" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>High-Stakes Exams</strong> Timed, silent exams where precision and memory are key.</span></div>
+          <div class="opt" data-g="assespref" data-v="Deep-Dive Research" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Deep-Dive Research</strong> Long-term projects, essays, or investigations.</span></div>
+          <div class="opt" data-g="assespref" data-v="Creative Portfolios" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Creative Portfolios</strong> Visual, digital, or physical builds and designs.</span></div>
+          <div class="opt" data-g="assespref" data-v="Verbal Defense" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Verbal Defense</strong> Oral presentations, debates, or group discussions.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">What is your "native language" when learning new information?</div>
+        <div class="ql-hint">Information Processing</div>
+        <div class="oc">
+          <div class="opt" data-g="infoproc" data-v="Quantitative" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Quantitative</strong> Data, formulas, logic puzzles, and clear-cut proofs.</span></div>
+          <div class="opt" data-g="infoproc" data-v="Verbal/Linguistic" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Verbal / Linguistic</strong> Storytelling, nuanced writing, and historical context.</span></div>
+          <div class="opt" data-g="infoproc" data-v="Spatial/Visual" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Spatial / Visual</strong> Diagrams, maps, physical models, and design layouts.</span></div>
+          <div class="opt" data-g="infoproc" data-v="Interpersonal" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Interpersonal</strong> Debating ideas and teaching others.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Think of a time you lost track of time on a school task. What were you doing?</div>
+        <div class="ql-hint">The "Flow" Factor</div>
+        <div class="oc">
+          <div class="opt" data-g="flow" data-v="Problem-Solving" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Solving a complex, multi-step problem (Maths / Coding / Logic)</span></div>
+          <div class="opt" data-g="flow" data-v="Writing/Editing" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Writing or editing a piece of work to make it perfect (English / History)</span></div>
+          <div class="opt" data-g="flow" data-v="Lab/Building" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Conducting an experiment or building a prototype (Science / Engineering)</span></div>
+          <div class="opt" data-g="flow" data-v="Organising/Planning" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Organising a team or planning a group project (Leadership / Business)</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">What classroom atmosphere brings out your best work?</div>
+        <div class="ql-hint">Academic Environment</div>
+        <div class="oc">
+          <div class="opt" data-g="classenv" data-v="Competitive" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Competitive</strong> High-pressure, rankings and top marks drive me.</span></div>
+          <div class="opt" data-g="classenv" data-v="Collaborative" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Collaborative</strong> Social, team-based problem solving.</span></div>
+          <div class="opt" data-g="classenv" data-v="Independent" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Independent</strong> Quiet, self-paced, without interruptions.</span></div>
+          <div class="opt" data-g="classenv" data-v="Hands-On" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Hands-On</strong> Vocational or lab-based, physically active.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Is there a subject where you love the topic but struggle with exams?</div>
+        <div class="ql-hint">Subject-Skill Alignment</div>
+        <div class="oc">
+          <div class="opt" data-g="subjskill" data-v="Love topic, struggle with exams" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Yes — I love the concepts but find formal testing difficult.</span></div>
+          <div class="opt" data-g="subjskill" data-v="Interest matches performance" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">No — my interest in a subject usually matches my performance.</span></div>
+          <div class="opt" data-g="subjskill" data-v="Excel in boring subjects" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">I actually excel in subjects I find boring or uninteresting.</span></div>
+          <div class="opt" data-g="subjskill" data-v="Only passionate subjects" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">I only perform well in subjects I am personally passionate about.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Which best describes your ultimate academic ambition?</div>
+        <div class="ql-hint">Educational Goal</div>
+        <div class="oc">
+          <div class="opt" data-g="edugoal" data-v="Innovation" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Innovation</strong> Discover something new or invent a product.</span></div>
+          <div class="opt" data-g="edugoal" data-v="Authority" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Authority</strong> Become a highly respected expert or professor.</span></div>
+          <div class="opt" data-g="edugoal" data-v="Impact" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Impact</strong> Use education to solve a social or environmental problem.</span></div>
+          <div class="opt" data-g="edugoal" data-v="Utility" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Utility</strong> Gain a specialised skill for a high-demand, stable career.</span></div>
+        </div>
+      </div>
+
+      <div class="pa"><button class="bo" onclick="goTo('dashboard')">← Dashboard</button><button class="bs" onclick="nx(1)">Next Step →</button></div>
+    </div>
+
+    <!-- ═ STEP 2: PORTFOLIO ═ -->
+    <div class="pan" id="p2">
+      <h2 class="pt2">Portfolio & Activities</h2>
+      <p class="ps">Show us what you do outside the classroom.</p>
+
+      <div class="qb">
+        <div class="ql">Work experience / internships</div>
+        <div class="ql-hint">Select all that apply</div>
+        <div class="og">
+          <div class="opt" data-g="workexp" data-v="Formal Internship" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Formal Internship</span></div>
+          <div class="opt" data-g="workexp" data-v="Part-Time Job" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Part-Time Job</span></div>
+          <div class="opt" data-g="workexp" data-v="Freelance / Self-Employed" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Freelance / Self-Employed</span></div>
+          <div class="opt" data-g="workexp" data-v="Family Business" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Family Business Experience</span></div>
+          <div class="opt" data-g="workexp" data-v="Shadowing / Observation" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Job Shadowing / Observation</span></div>
+          <div class="opt" data-g="workexp" data-v="Online / Remote Work" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Online / Remote Work</span></div>
+          <div class="opt" data-g="workexp" data-v="Research Assistant" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Research Assistant</span></div>
+          <div class="opt" data-g="workexp" data-v="None Yet" onclick="tog(this)"><div class="ob">✓</div><span class="ot">None Yet / Looking</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Extracurricular activities <small style="color:var(--t3)">(Select all that apply)</small></div>
+        <div class="og">
+          <div class="opt" data-g="extra" data-v="Sports & Athletics" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Sports & Athletics</span></div>
+          <div class="opt" data-g="extra" data-v="Music & Performing Arts" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Music & Performing Arts</span></div>
+          <div class="opt" data-g="extra" data-v="Robotics / STEM Clubs" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Robotics / STEM Clubs</span></div>
+          <div class="opt" data-g="extra" data-v="Student Leadership" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Student Leadership</span></div>
+          <div class="opt" data-g="extra" data-v="Coding / Tech Projects" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Coding / Tech Projects</span></div>
+          <div class="opt" data-g="extra" data-v="Research / Science Fairs" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Research / Science Fairs</span></div>
+          <div class="opt" data-g="extra" data-v="Volunteering" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Volunteering / Community Service</span></div>
+          <div class="opt" data-g="extra" data-v="Arts & Design" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Arts & Design / Photography</span></div>
+          <div class="opt" data-g="extra" data-v="Debate / MUN" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Debate / Model UN</span></div>
+          <div class="opt" data-g="extra" data-v="Entrepreneurship Club" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Entrepreneurship Club</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Highest leadership role held</div>
+        <div class="oc">
+          <div class="opt" data-g="lead" data-v="None" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">None</span></div>
+          <div class="opt" data-g="lead" data-v="Team member" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Team member / Participant</span></div>
+          <div class="opt" data-g="lead" data-v="Committee / Club head" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Committee head / Club officer</span></div>
+          <div class="opt" data-g="lead" data-v="School-wide representative" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">School-wide representative / Captain</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">When working on a non-academic project, which role do you naturally take?</div>
+        <div class="ql-hint">Contribution Persona</div>
+        <div class="oc">
+          <div class="opt" data-g="persona" data-v="Visionary" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Visionary</strong> Strategy and big ideas.</span></div>
+          <div class="opt" data-g="persona" data-v="Builder" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Builder</strong> Execution and technical work.</span></div>
+          <div class="opt" data-g="persona" data-v="Connector" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Connector</strong> People, networking, relationships.</span></div>
+          <div class="opt" data-g="persona" data-v="Finisher" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Finisher</strong> Details and polishing the final product.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">If you had a free weekend for a passion project, what would the result look like?</div>
+        <div class="ql-hint">Output Preference</div>
+        <div class="oc">
+          <div class="opt" data-g="output" data-v="Physical prototype" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">A physical object or prototype I can hold</span></div>
+          <div class="opt" data-g="output" data-v="Digital / Code" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">A digital file, app, or piece of code</span></div>
+          <div class="opt" data-g="output" data-v="Writing / Art" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">A piece of writing, art, or creative content</span></div>
+          <div class="opt" data-g="output" data-v="Organised event" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">An organised event or community initiative</span></div>
+          <div class="opt" data-g="output" data-v="Solved dataset" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">A solved dataset, analysis, or research document</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Why do you continue with your favourite extracurricular activity?</div>
+        <div class="ql-hint">Motivation Trigger</div>
+        <div class="oc">
+          <div class="opt" data-g="motive2" data-v="Competition" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">The thrill of competition and winning</span></div>
+          <div class="opt" data-g="motive2" data-v="Creative expression" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">The peace of creative expression</span></div>
+          <div class="opt" data-g="motive2" data-v="Helping others" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">The satisfaction of helping others</span></div>
+          <div class="opt" data-g="motive2" data-v="Mastery" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">The desire to master a difficult skill</span></div>
+        </div>
+      </div>
+
+      <div class="pa"><button class="bo" onclick="sv(2)">← Back</button><button class="bs" onclick="nx(2)">Next Step →</button></div>
+    </div>
+
+    <!-- ═ STEP 3: PERSONALITY ═ -->
+    <div class="pan" id="p3">
+      <h2 class="pt2">Your Personality</h2>
+      <p class="ps">Help us understand how you think, work, and make decisions.</p>
+
+      <div class="qb">
+        <div class="ql">How do you prefer to solve problems?</div>
+        <div class="oc">
+          <div class="opt" data-g="solve" data-v="Analytically" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Analytically — data, logic, structured thinking</span></div>
+          <div class="opt" data-g="solve" data-v="Creatively" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Creatively — brainstorming, unique solutions</span></div>
+          <div class="opt" data-g="solve" data-v="Collaboratively" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Collaboratively — discussing with others</span></div>
+          <div class="opt" data-g="solve" data-v="Practically" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Practically — hands-on, trial and error</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Which interaction leaves you feeling most energised in a professional setting?</div>
+        <div class="ql-hint">Social Battery</div>
+        <div class="oc">
+          <div class="opt" data-g="social" data-v="Individualist" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Individualist</strong> Working deeply on a solo task without interruptions.</span></div>
+          <div class="opt" data-g="social" data-v="Collaborator" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Collaborator</strong> Bouncing ideas off a small, consistent team.</span></div>
+          <div class="opt" data-g="social" data-v="Connector" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Connector</strong> Meeting new people, networking, building external relationships.</span></div>
+          <div class="opt" data-g="social" data-v="Advisor" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Advisor</strong> Helping someone one-on-one with a personal or technical problem.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">When faced with a choice, what is your primary compass?</div>
+        <div class="ql-hint">Decision-Making Style</div>
+        <div class="oc">
+          <div class="opt" data-g="decision" data-v="Analyst" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Analyst</strong> Hard data, logic, and objective facts.</span></div>
+          <div class="opt" data-g="decision" data-v="Empath" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Empath</strong> How the decision will affect the people involved.</span></div>
+          <div class="opt" data-g="decision" data-v="Intuitive" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Intuitive</strong> A gut feeling based on past patterns and possibilities.</span></div>
+          <div class="opt" data-g="decision" data-v="Traditionalist" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Traditionalist</strong> Proven methods, regulations, and historical success.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">How do you prefer your typical workday to look?</div>
+        <div class="ql-hint">Response to Chaos & Change</div>
+        <div class="oc">
+          <div class="opt" data-g="workday" data-v="Highly Structured" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Highly Structured</strong> Clear routines, set hours, predictable tasks.</span></div>
+          <div class="opt" data-g="workday" data-v="Dynamic" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Dynamic</strong> Fast-paced, every day brings a new crisis or challenge.</span></div>
+          <div class="opt" data-g="workday" data-v="Project-Based" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Project-Based</strong> Intense work periods followed by breaks or shifts in focus.</span></div>
+          <div class="opt" data-g="workday" data-v="Self-Directed" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Self-Directed</strong> Complete freedom to set my own schedule and priorities.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">When a disagreement arises in a group, what is your natural instinct?</div>
+        <div class="ql-hint">Conflict Resolution</div>
+        <div class="oc">
+          <div class="opt" data-g="conflict" data-v="Harmonizer" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Harmonizer</strong> I find a compromise and keep everyone happy.</span></div>
+          <div class="opt" data-g="conflict" data-v="Direct Communicator" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Direct Communicator</strong> I address the issue head-on for the most efficient solution.</span></div>
+          <div class="opt" data-g="conflict" data-v="Observer" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Observer</strong> I stay neutral and focus on my own responsibilities.</span></div>
+          <div class="opt" data-g="conflict" data-v="Strategist" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Strategist</strong> I find a creative middle way that solves the problem technically.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Which scenario sounds most appealing to you?</div>
+        <div class="ql-hint">Risk Tolerance</div>
+        <div class="oc">
+          <div class="opt" data-g="risk" data-v="Security" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Security</strong> A stable, prestigious job with a guaranteed long-term path.</span></div>
+          <div class="opt" data-g="risk" data-v="Impact" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Impact</strong> A startup or new field where I can make a huge difference, even if risky.</span></div>
+          <div class="opt" data-g="risk" data-v="Growth" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Growth</strong> A competitive environment where I constantly prove myself.</span></div>
+          <div class="opt" data-g="risk" data-v="Balance" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Balance</strong> A flexible role that allows me to prioritise life outside work.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">When starting a new project, what part excites you most?</div>
+        <div class="ql-hint">Attention to Detail vs. Big Picture</div>
+        <div class="oc">
+          <div class="opt" data-g="bigpic" data-v="Visionary" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Visionary</strong> Imagining the end result and the big idea.</span></div>
+          <div class="opt" data-g="bigpic" data-v="Craftsman" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Craftsman</strong> Getting into the weeds and perfecting tiny details.</span></div>
+          <div class="opt" data-g="bigpic" data-v="Architect" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Architect</strong> Designing the roadmap and the steps to get there.</span></div>
+          <div class="opt" data-g="bigpic" data-v="Critic" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Critic</strong> Finding potential flaws and fixing them before we start.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">How do you prefer to receive criticism on your performance?</div>
+        <div class="ql-hint">Feedback Sensitivity</div>
+        <div class="oc">
+          <div class="opt" data-g="feedback" data-v="Direct" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Direct and blunt — just tell me what I did wrong so I can fix it.</span></div>
+          <div class="opt" data-g="feedback" data-v="Encouraging" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Encouraging and soft — highlight what I did well before the critique.</span></div>
+          <div class="opt" data-g="feedback" data-v="Data-driven" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Data-driven — show me the metrics or grades that prove the feedback.</span></div>
+          <div class="opt" data-g="feedback" data-v="Public" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Publicly recognised — as part of a larger team review.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">What kind of "deep dive" is most satisfying to you?</div>
+        <div class="ql-hint">Intellectual Curiosity</div>
+        <div class="oc">
+          <div class="opt" data-g="curiosity" data-v="Systems/Machines" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Understanding how a complex machine or system works.</span></div>
+          <div class="opt" data-g="curiosity" data-v="Human Psychology" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Understanding the psychology of why people behave the way they do.</span></div>
+          <div class="opt" data-g="curiosity" data-v="History/Culture" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Exploring the history and evolution of a specific culture or idea.</span></div>
+          <div class="opt" data-g="curiosity" data-v="Technical Mastery" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Mastering a technical skill or language until it becomes second nature.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Which environment do you thrive in?</div>
+        <div class="oc">
+          <div class="opt" data-g="env" data-v="Fast-paced and dynamic" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Fast-paced and dynamic</span></div>
+          <div class="opt" data-g="env" data-v="Structured and process-driven" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Structured and process-driven</span></div>
+          <div class="opt" data-g="env" data-v="Independent and research-focused" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Independent and research-focused</span></div>
+          <div class="opt" data-g="env" data-v="People-centered and social" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">People-centered and social</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">What motivates you most?</div>
+        <div class="oc">
+          <div class="opt" data-g="motiv" data-v="Positive societal impact" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Making a positive impact on society</span></div>
+          <div class="opt" data-g="motiv" data-v="Financial success" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Achieving financial success and stability</span></div>
+          <div class="opt" data-g="motiv" data-v="Intellectual challenge" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Intellectual challenge and discovery</span></div>
+          <div class="opt" data-g="motiv" data-v="Creative expression" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Creative expression and innovation</span></div>
+        </div>
+      </div>
+
+      <div class="pa"><button class="bo" onclick="sv(3)">← Back</button><button class="bs" onclick="nx(3)">Next Step →</button></div>
+    </div>
+
+    <!-- ═ STEP 4: CAREER VISION ═ -->
+    <div class="pan" id="p4">
+      <h2 class="pt2">Career Vision</h2>
+      <p class="ps">Share your goals and international aspirations so we can refine your results.</p>
+
+      <div class="qb">
+        <div class="ql">Which career fields interest you? <small style="color:var(--t3)">(Select all that apply)</small></div>
+        <div class="og">
+          <div class="opt" data-g="ci" data-v="Engineering & Technology" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Engineering & Technology</span></div>
+          <div class="opt" data-g="ci" data-v="Medicine & Healthcare" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Medicine & Healthcare</span></div>
+          <div class="opt" data-g="ci" data-v="Business & Finance" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Business & Finance</span></div>
+          <div class="opt" data-g="ci" data-v="Architecture & Design" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Architecture & Design</span></div>
+          <div class="opt" data-g="ci" data-v="Law & Government" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Law & Government</span></div>
+          <div class="opt" data-g="ci" data-v="Education & Social Sciences" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Education & Social Sciences</span></div>
+          <div class="opt" data-g="ci" data-v="Media & Communications" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Media & Communications</span></div>
+          <div class="opt" data-g="ci" data-v="Research & Academia" onclick="tog(this)"><div class="ob">✓</div><span class="ot">Research & Academia</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Where do you envision establishing your professional career?</div>
+        <div class="ql-hint">Geographic Career Base</div>
+        <div class="oc">
+          <div class="opt" data-g="geobase" data-v="UAE Focused" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>UAE Focused</strong> Build my career entirely within the UAE.</span></div>
+          <div class="opt" data-g="geobase" data-v="Global Nomad" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Global Nomad</strong> Move between different countries every few years.</span></div>
+          <div class="opt" data-g="geobase" data-v="The Bridge" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Bridge</strong> UAE-based company but in their international offices.</span></div>
+          <div class="opt" data-g="geobase" data-v="Academic Expatriate" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Academic Expatriate</strong> Study and work abroad for a decade before returning home.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">How do you feel about working in a culture entirely different from your own?</div>
+        <div class="ql-hint">Cultural Adaptation Style</div>
+        <div class="oc">
+          <div class="opt" data-g="culture" data-v="Adventurer" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Adventurer</strong> Navigating a new culture is highly exciting and motivating.</span></div>
+          <div class="opt" data-g="culture" data-v="Diplomat" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Diplomat</strong> Comfortable adapting as long as there is clear professional structure.</span></div>
+          <div class="opt" data-g="culture" data-v="Comfort-Seeker" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Comfort-Seeker</strong> I prefer an environment that feels familiar and aligns with my values.</span></div>
+          <div class="opt" data-g="culture" data-v="Universalist" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The Universalist</strong> Professional skills are the same everywhere; culture doesn't change much.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Which type of global organisation appeals to you most?</div>
+        <div class="ql-hint">International Industry Alignment</div>
+        <div class="oc">
+          <div class="opt" data-g="globalorg" data-v="Intergovernmental" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Intergovernmental</strong> UN, WHO, World Bank — tackling global issues.</span></div>
+          <div class="opt" data-g="globalorg" data-v="Multinational Corporate" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Multinational Corporate</strong> Google, Shell, Goldman Sachs — offices worldwide.</span></div>
+          <div class="opt" data-g="globalorg" data-v="Global Research" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Global Research</strong> International laboratories or universities on scientific breakthroughs.</span></div>
+          <div class="opt" data-g="globalorg" data-v="Foreign Startup" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Foreign Startup</strong> High-growth tech company in Silicon Valley, Berlin, or Bangalore.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">How does your university location choice influence your long-term career?</div>
+        <div class="ql-hint">Study Abroad Intent</div>
+        <div class="oc">
+          <div class="opt" data-g="studyint" data-v="International network" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Study abroad to build an international network for a global career.</span></div>
+          <div class="opt" data-g="studyint" data-v="Local connections" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Study in the UAE to stay connected to local industry and internships.</span></div>
+          <div class="opt" data-g="studyint" data-v="2+2 Program" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">A 2+2 programme — half at home, half abroad.</span></div>
+          <div class="opt" data-g="studyint" data-v="Ranking-focused" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Location doesn't matter as much as the global ranking of the programme.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">What kind of international work sounds most fulfilling to you?</div>
+        <div class="ql-hint">Cross-Border Work Nature</div>
+        <div class="oc">
+          <div class="opt" data-g="intlwork" data-v="Physical Presence" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Living and working in a foreign city for years at a time.</span></div>
+          <div class="opt" data-g="intlwork" data-v="Frequent Travel" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Based in the UAE but flying internationally 50% of the year.</span></div>
+          <div class="opt" data-g="intlwork" data-v="Digital Integration" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Working from the UAE for a global team via remote technology.</span></div>
+          <div class="opt" data-g="intlwork" data-v="Consultancy" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Travelling to different countries for short, high-impact projects (2–4 weeks).</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Which global challenge would you be most willing to move across the world to help solve?</div>
+        <div class="ql-hint">Global Economic Driver</div>
+        <div class="oc">
+          <div class="opt" data-g="globalchallenge" data-v="Sustainability" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Sustainability</strong> Climate change and renewable energy transitions.</span></div>
+          <div class="opt" data-g="globalchallenge" data-v="Technology" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Technology</strong> Ethical development of AI and global digital infrastructure.</span></div>
+          <div class="opt" data-g="globalchallenge" data-v="Health" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Health</strong> Eradicating diseases or managing global healthcare systems.</span></div>
+          <div class="opt" data-g="globalchallenge" data-v="Finance" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Finance</strong> Managing global capital flow and international trade.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">How far from family and support are you comfortable being for the first 5 years?</div>
+        <div class="ql-hint">Personal Independence Level</div>
+        <div class="oc">
+          <div class="opt" data-g="independence" data-v="Proximity" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Proximity</strong> Within a 2-hour drive; I value regular family time.</span></div>
+          <div class="opt" data-g="independence" data-v="Regional" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Regional</strong> Within the Middle East / GCC; a short flight away.</span></div>
+          <div class="opt" data-g="independence" data-v="Global" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Global</strong> Anywhere in the world; I am ready for total independence.</span></div>
+          <div class="opt" data-g="independence" data-v="Fluid" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Fluid</strong> Anywhere, provided the career opportunity is prestigious enough.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">When you think about the peak of your career, where is home?</div>
+        <div class="ql-hint">Long-term Residency Goal</div>
+        <div class="oc">
+          <div class="opt" data-g="residency" data-v="UAE" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>The UAE</strong> Regardless of where I work, I plan to retire and settle in the UAE.</span></div>
+          <div class="opt" data-g="residency" data-v="Dual Citizen" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Dual-Citizen Life</strong> Homes in two countries, moving between them.</span></div>
+          <div class="opt" data-g="residency" data-v="Undecided" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Undecided</strong> I'll go where the growth is.</span></div>
+          <div class="opt" data-g="residency" data-v="Global Citizen" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Global Citizen</strong> I don't feel tied to one location.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">Where do you plan to study?</div>
+        <div class="oc">
+          <div class="opt" data-g="sloc" data-v="In the UAE" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">In the UAE</span></div>
+          <div class="opt" data-g="sloc" data-v="UK / Europe" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">UK / Europe</span></div>
+          <div class="opt" data-g="sloc" data-v="USA / Canada" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">USA / Canada</span></div>
+          <div class="opt" data-g="sloc" data-v="Australia / New Zealand" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Australia / New Zealand</span></div>
+          <div class="opt" data-g="sloc" data-v="Undecided" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Undecided</span></div>
+        </div>
+      </div>
+
+      <div class="pa"><button class="bo" onclick="sv(4)">← Back</button><button class="bs" id="sub-btn" onclick="submitA()">Submit & View Results →</button></div>
+    </div>
+  </div>
+  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE</span><span>Empowering students across the Emirates</span></footer>
+</div>
+
+<!-- ══ RESULTS ══ -->
+<div id="results" class="page">
+  <nav>
+    <button class="logo" onclick="goTo('dashboard')">EduPath <span>UAE</span></button>
+    <div class="nu"><span class="nn" id="r-nn"></span><div class="av" id="r-av"></div><button class="bt" onclick="doLogout()">Log out</button></div>
+  </nav>
+  <div class="body" id="results-body">
+    <div class="rh fu">
+      <div><h2 class="rt">Your EduPath Report</h2><p class="rm" id="r-meta"></p></div>
+      <div class="rbtns">
+        <button class="btn-dl" id="pdf-btn" onclick="downloadPDF()">⬇ Download PDF</button>
+      </div>
+    </div>
+
+    <!-- Definitive career -->
+    <div class="def-career fu d1">
+      <div>
+        <div class="def-label">Your Definitive Career Match</div>
+        <div class="def-career-name" id="r-def-career">—</div>
+      </div>
+      <div class="def-badge" id="r-def-pct">—%</div>
+    </div>
+
+    <!-- Match bars + top card -->
+    <div class="rg fu d1">
+      <div class="tc"><div class="tp" id="r-tp">—</div><div class="tpl">top match score</div><div class="tcar" id="r-tc">—</div></div>
+      <div class="rks" id="r-rks"></div>
+    </div>
+
+    <!-- Pie chart -->
+    <div class="pie-wrap fu d2">
+      <div style="flex-shrink:0">
+        <div class="pie-title">Career Match Distribution</div>
+        <canvas id="pieCanvas" width="180" height="180"></canvas>
+      </div>
+      <div class="pie-legend" id="pie-legend"></div>
+    </div>
+
+    <!-- Personality & Insights -->
+    <div class="ir fu d2">
+      <div class="ic card">
+        <div class="il">Personality Insights</div>
+        <div class="tgs" id="r-tgs"></div>
+        <div class="ib" id="r-ins"></div>
+      </div>
+      <div class="ic card">
+        <div class="il">In-Depth Profile Analysis</div>
+        <div class="ib" id="r-adv"></div>
+      </div>
+    </div>
+
+    <!-- University suggestions -->
+    <div class="uni-section fu d3">
+      <div class="sh" style="margin-bottom:16px">University Suggestions</div>
+      <div class="uni-grid" id="r-unis"></div>
+    </div>
+
+    <div class="rac fu d3">
+      <button class="bn2" onclick="goTo('assessment')">+ New Assessment</button>
+      <button class="bo" onclick="goTo('dashboard')">← Dashboard</button>
+    </div>
+  </div>
+  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE</span><span>Empowering students across the Emirates</span></footer>
+</div>
+
+<script>
+/* ══════════════════════════
+   SUPABASE
+══════════════════════════ */
+const SB = supabase.createClient(
+  'https://cgjenwwwrwofdnutvfda.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnamVud3d3cndvZmRudXR2ZmRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjAwMTUsImV4cCI6MjA5MTkzNjAxNX0.Ja2E0c8A5rMTuXDxt9atuPGhalKg0mK65EuJthic0fs'
+);
+
+let CU=null, CP=null, pfpDataUrl=null, settingsPfpDataUrl=null;
+
+/* ══════════════════════════
+   BOOT
+══════════════════════════ */
+(async()=>{
+  // Check if arriving from a password-reset link
+  const hash = window.location.hash;
+  if (hash.includes('type=recovery')) {
+    const { data:{ session } } = await SB.auth.getSession();
+    if (session) { CU = session.user; openModal('reset-modal'); }
+    goTo('login');
+    document.getElementById('ls').classList.add('gone');
+    return;
+  }
+  try {
+    const { data:{ session } } = await SB.auth.getSession();
+    if (session) {
+      CU = session.user;
+      await loadProfile();
+      goTo('dashboard');
+      await loadDash();
+    } else { goTo('landing'); }
+  } catch(e) { goTo('landing'); }
+  document.getElementById('ls').classList.add('gone');
+  buildSubjectList();
+})();
+
+SB.auth.onAuthStateChange(async(ev, session)=>{
+  if (ev==='SIGNED_IN' && session) { CU=session.user; }
+  else if (ev==='SIGNED_OUT') { CU=null; CP=null; }
+  else if (ev==='PASSWORD_RECOVERY') { openModal('reset-modal'); }
+});
+
+/* ══════════════════════════
+   BUILD SUBJECT LIST
+══════════════════════════ */
+const ALL_SUBJECTS = [
+  'Mathematics','Biology','Chemistry','Physics','Computer Science',
+  'Business Studies','Economics','English / Literature','History','Geography',
+  'Art & Design','Music','Physical Education (PE)','Health Education',
+  'Moral Social & Cultural Studies (MSCS)','Psychology','Sociology',
+  'Environmental Science','Design Technology','Media Studies',
+  'Arabic Language','Islamic Studies','French','German','Spanish'
+];
+const GRADE_OPTIONS = ['A*','A','B','C','D','E/F','90–100%','80–89%','70–79%','60–69%','Below 60%','9','8','7','6','5','4','3','2','1','45–42 pts','41–38 pts','37–33 pts','32–28 pts','Below 28 pts'];
+
+function buildSubjectList() {
+  const c = document.getElementById('subj-list');
+  if (!c) return;
+  c.innerHTML = ALL_SUBJECTS.map(s => `
+    <div class="subj-row" id="sr-${s.replace(/[^a-z]/gi,'_')}">
+      <div class="subj-chk" onclick="toggleSubj(this,'${s.replace(/'/g,"\\'")}')">✓</div>
+      <span class="subj-name" onclick="toggleSubj(this.previousElementSibling,'${s.replace(/'/g,"\\'")}')"> ${s}</span>
+      <select class="subj-grade" disabled style="opacity:.35">
+        <option value="">Grade...</option>
+        ${GRADE_OPTIONS.map(g=>`<option>${g}</option>`).join('')}
+      </select>
+    </div>`).join('');
+}
+
+function toggleSubj(chk, name) {
+  const row = chk.closest('.subj-row');
+  const sel = row.querySelector('.subj-grade');
+  const on = chk.classList.toggle('on');
+  sel.disabled = !on;
+  sel.style.opacity = on ? '1' : '.35';
+}
+
+function getSubjectGrades() {
+  const result = [];
+  document.querySelectorAll('.subj-chk.on').forEach(chk => {
+    const row = chk.closest('.subj-row');
+    const name = row.querySelector('.subj-name').textContent.trim();
+    const grade = row.querySelector('.subj-grade').value || 'Not specified';
+    result.push({ subject: name, grade });
+  });
+  return result;
+}
+
+/* ══════════════════════════
+   NAV
+══════════════════════════ */
+function goTo(id) {
+  // Logo click: if logged in go to dashboard, never log out
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════
+   PROFILE
+══════════════════════════ */
+async function loadProfile() {
+  if(!CU) return;
+  const {data,error} = await SB.from('profiles').select('*').eq('id',CU.id).single();
+  if(!error && data) { CP=data; updateNavs(); }
+}
+
+function updateNavs() {
+  if(!CP) return;
+  const full = ((CP.first_name||'')+' '+(CP.last_name||'')).trim();
+  const ini  = ((CP.first_name||'')[0]||'').toUpperCase()+((CP.last_name||'')[0]||'').toUpperCase();
+  ['d','a','r','ps'].forEach(p=>{
+    const nn=document.getElementById(p+'-nn'), av=document.getElementById(p+'-av');
+    if(nn) nn.textContent=full;
+    if(av) {
+      if(CP.avatar_url) av.innerHTML=`<img src="${CP.avatar_url}" alt="avatar">`;
+      else av.textContent=ini;
+    }
+  });
+  st('d-fn', CP.first_name||'');
+  // Populate profile settings fields
+  const pf=document.getElementById('ps-f'), pl=document.getElementById('ps-l');
+  const ps=document.getElementById('ps-s'), pg=document.getElementById('ps-g');
+  if(pf) pf.value=CP.first_name||'';
+  if(pl) pl.value=CP.last_name||'';
+  if(ps) ps.value=CP.school||'';
+  if(pg) pg.value=CP.grade||'';
+  const pspi=document.getElementById('ps-pfp-prev');
+  if(pspi){
+    if(CP.avatar_url) pspi.innerHTML=`<img src="${CP.avatar_url}" alt="avatar">`;
+    else { pspi.innerHTML=''; const sp=document.createElement('span'); sp.id='ps-pfp-initials'; sp.textContent=ini; pspi.appendChild(sp); }
+  }
+}
+
+function st(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+
+/* ══════════════════════════
+   PROFILE PICTURE
+══════════════════════════ */
+function previewPfp(input) {
+  if(!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    pfpDataUrl = e.target.result;
+    const prev = document.getElementById('su-pfp-prev');
+    prev.innerHTML = `<img src="${pfpDataUrl}" alt="preview">`;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function updatePfpInitials() {
+  const f = document.getElementById('su-f').value;
+  const ini = document.getElementById('su-pfp-initials');
+  if(ini && !pfpDataUrl) ini.textContent = f ? f[0].toUpperCase() : '📷';
+}
+
+function previewSettingsPfp(input) {
+  if(!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    settingsPfpDataUrl = e.target.result;
+    const prev = document.getElementById('ps-pfp-prev');
+    prev.innerHTML = `<img src="${settingsPfpDataUrl}" alt="preview">`;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+/* ══════════════════════════
+   LOGIN
+══════════════════════════ */
+async function doLogin() {
+  const email=gv('li-e').trim(), pass=gv('li-p');
+  if(!email||!pass){showE('le','Please fill in all fields.');return;}
+  setBtn('li-btn',true,'Logging in…');
+  const {data,error}=await SB.auth.signInWithPassword({email,password:pass});
+  setBtn('li-btn',false,'Log in');
+  if(error){showE('le',friendlyErr(error.message));return;}
+  CU=data.user; await loadProfile();
+  toast('Welcome back! 👋','ok');
+  goTo('dashboard'); await loadDash();
+}
+
+/* ══════════════════════════
+   SIGNUP
+══════════════════════════ */
+async function doSignup() {
+  const first=gv('su-f').trim(), last=gv('su-l').trim();
+  const email=gv('su-e').trim(), school=gv('su-s').trim();
+  const grade=gv('su-g'), pass=gv('su-p');
+  if(!first||!last||!email||!school||!grade||!pass){showE('se','Please fill in all fields.');return;}
+  if(pass.length<6){showE('se','Password must be at least 6 characters.');return;}
+  setBtn('su-btn',true,'Creating account…');
+  const {data,error}=await SB.auth.signUp({email,password:pass});
+  if(error){setBtn('su-btn',false,'Create Free Account');showE('se',friendlyErr(error.message));return;}
+  CU=data.user;
+  const profileData = { id:CU.id, first_name:first, last_name:last, school, grade };
+  if(pfpDataUrl) profileData.avatar_url = pfpDataUrl; // store as base64 for prototype
+  const {error:pe}=await SB.from('profiles').insert(profileData);
+  if(pe) console.warn('Profile:',pe.message);
+  await loadProfile();
+  setBtn('su-btn',false,'Create Free Account');
+  toast('Account created! Welcome to EduPath 🎉','ok');
+  goTo('dashboard'); await loadDash();
+}
+
+/* ══════════════════════════
+   SAVE PROFILE SETTINGS
+══════════════════════════ */
+async function saveProfile() {
+  if(!CU) return;
+  const first=gv('ps-f').trim(), last=gv('ps-l').trim();
+  const school=gv('ps-s').trim(), grade=gv('ps-g');
+  setBtn('ps-btn',true,'Saving…');
+  const upd = { first_name:first, last_name:last, school, grade, updated_at:new Date().toISOString() };
+  if(settingsPfpDataUrl) upd.avatar_url = settingsPfpDataUrl;
+  const {error}=await SB.from('profiles').update(upd).eq('id',CU.id);
+  setBtn('ps-btn',false,'Save Changes');
+  if(error){showE('ps-err',friendlyErr(error.message));return;}
+  await loadProfile();
+  toast('Profile updated! ✓','ok');
+  goTo('dashboard');
+}
+
+/* ══════════════════════════
+   LOGOUT
+══════════════════════════ */
+async function doLogout() {
+  await SB.auth.signOut(); CU=null; CP=null;
+  toast('Logged out',''); goTo('landing');
+}
+
+/* ══════════════════════════
+   FORGOT / RESET PASSWORD
+══════════════════════════ */
+async function openForgot() {
+  const email=gv('li-e').trim();
+  if(!email){showE('le','Enter your email address above first.');return;}
+  const {error}=await SB.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+  if(error){showE('le',friendlyErr(error.message));return;}
+  toast('Reset link sent to '+email,'ok');
+}
+
+async function doResetPassword() {
+  const np=gv('rp-new'), cp=gv('rp-confirm');
+  if(!np||!cp){showE('rp-err','Please fill in both fields.');return;}
+  if(np!==cp){showE('rp-err','Passwords do not match.');return;}
+  if(np.length<6){showE('rp-err','Password must be at least 6 characters.');return;}
+  setBtn('rp-btn',true,'Updating…');
+  const {error}=await SB.auth.updateUser({password:np});
+  setBtn('rp-btn',false,'Update Password');
+  if(error){showE('rp-err',friendlyErr(error.message));return;}
+  closeModal('reset-modal');
+  toast('Password updated successfully! ✓','ok');
+  await loadProfile(); goTo('dashboard'); await loadDash();
+}
+
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+
+/* ══════════════════════════
+   DASHBOARD
+══════════════════════════ */
+async function loadDash() {
+  if(!CU) return;
+  updateNavs();
+  const {data,error}=await SB.from('assessments')
+    .select('id,created_at,top_match_career,top_match_score')
+    .eq('user_id',CU.id).order('created_at',{ascending:false});
+  if(error){console.error(error);return;}
+  const list=data||[];
+  st('s-cnt',list.length||'0');
+  if(list.length>0){
+    const best=list.reduce((a,b)=>(b.top_match_score||0)>(a.top_match_score||0)?b:a);
+    st('s-best',(best.top_match_score||0)+'%');
+    st('s-bc',best.top_match_career||'—');
+    const ago=Math.floor((Date.now()-new Date(list[0].created_at))/86400000);
+    st('s-last',ago===0?'Today':ago===1?'1 day ago':ago+' days ago');
+    st('s-ld',new Date(list[0].created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}));
+  } else {
+    st('s-best','—');st('s-bc','Start an assessment');st('s-last','—');st('s-ld','No assessments yet');
+  }
+  const el=document.getElementById('al');
+  if(list.length===0){el.innerHTML='<div class="es"><p>No assessments yet. Take your first one above!</p></div>';return;}
+  el.innerHTML=list.map(a=>{
+    const d=new Date(a.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    return `<div class="card ar2 card-h">
+      <div><div class="ad">${d}</div><div class="ac">${a.top_match_career||'Assessment completed'}</div></div>
+      <div class="arp">
+        ${a.top_match_score?`<span class="pp">${a.top_match_score}% match</span>`:''}
+        <button class="bsm" onclick="viewResult('${a.id}')">View Results</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function viewResult(id) {
+  const {data,error}=await SB.from('assessments').select('*').eq('id',id).single();
+  if(error||!data){toast('Could not load result','err');return;}
+  renderResults(data,null); goTo('results');
+}
+
+/* ══════════════════════════
+   ASSESSMENT STEPS
+══════════════════════════ */
+function nx(from) {
+  if(from===1){
+    if(!gv('q-cur')){toast('Please select your curriculum','err');return;}
+    if(!gv('q-grading')){toast('Please select your grading system','err');return;}
+    if(!gr('spectype')){toast('Please answer the specialist vs all-rounder question','err');return;}
+  }
+  if(from===2){
+    if(!gr('lead')){toast('Please select a leadership role','err');return;}
+    if(!gr('persona')){toast('Please select your contribution persona','err');return;}
+  }
+  if(from===3){
+    if(!gr('solve')){toast('Please select how you solve problems','err');return;}
+    if(!gr('env')){toast('Please select your preferred environment','err');return;}
+    if(!gr('motiv')){toast('Please select what motivates you','err');return;}
+  }
+  setStep(from+1);
+}
+function sv(from){setStep(from-1);}
+
+function setStep(n) {
+  for(let i=1;i<=4;i++){
+    document.getElementById('p'+i).classList.toggle('act',i===n);
+    const dot=document.getElementById('sd'+i),name=document.getElementById('sn'+i);
+    if(i<n){dot.className='sd dn';dot.textContent='✓';name.className='snm';}
+    else if(i===n){dot.className='sd act';dot.textContent=i;name.className='snm act';}
+    else{dot.className='sd';dot.textContent=i;name.className='snm';}
+    if(i<4) document.getElementById('sl'+i).className='sl3'+(i<n?' dn':'');
+  }
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════
+   SUBMIT
+══════════════════════════ */
+async function submitA() {
+  const interests=gm('ci');
+  if(interests.length===0){toast('Please select at least one career field','err');return;}
+  if(!gr('sloc')){toast('Please select where you plan to study','err');return;}
+  setBtn('sub-btn',true,'Analysing your profile…');
+
+  const subjectGrades = getSubjectGrades();
+  const subjects = subjectGrades.map(s=>s.subject);
+  const extras=gm('extra'), lead=gr('lead'), curriculum=gv('q-cur'), grading=gv('q-grading');
+  const solve=gr('solve'), env=gr('env'), motiv=gr('motiv'), sloc=gr('sloc');
+
+  const allAnswers = {
+    subjects, extras, lead, curriculum, grading, subjectGrades,
+    solve, env, motiv, interests, sloc,
+    spectype:gr('spectype'), endure:gr('endure'), assespref:gr('assespref'),
+    infoproc:gr('infoproc'), flow:gr('flow'), classenv:gr('classenv'),
+    subjskill:gr('subjskill'), edugoal:gr('edugoal'),
+    workexp:gm('workexp'), persona:gr('persona'), output:gr('output'), motive2:gr('motive2'),
+    social:gr('social'), decision:gr('decision'), workday:gr('workday'),
+    conflict:gr('conflict'), risk:gr('risk'), bigpic:gr('bigpic'),
+    feedback:gr('feedback'), curiosity:gr('curiosity'),
+    geobase:gr('geobase'), culture:gr('culture'), globalorg:gr('globalorg'),
+    studyint:gr('studyint'), intlwork:gr('intlwork'), globalchallenge:gr('globalchallenge'),
+    independence:gr('independence'), residency:gr('residency'),
+  };
+
+  const { top, score, all } = scoreAll(allAnswers);
+
+  const payload = {
+    user_id: CU.id, curriculum, subjects, gpa_range: grading,
+    has_internship: allAnswers.workexp.join(', '),
+    extracurriculars: extras, leadership_role: lead,
+    problem_solving_style: solve, thrive_environment: env,
+    primary_motivator: motiv, career_interests: interests,
+    study_location: sloc, top_match_career: top, top_match_score: score
+  };
+
+  const {data,error}=await SB.from('assessments').insert(payload).select().single();
+  setBtn('sub-btn',false,'Submit & View Results →');
+  if(error){console.error(error);toast('Error saving: '+error.message,'err');return;}
+  renderResults({...data, allMatches: all, rawAnswers: allAnswers});
+  toast('Assessment complete! ✨','ok');
+  goTo('results'); resetForm(); loadDash();
+}
+
+/* ══════════════════════════
+   SCORING ENGINE (extended)
+══════════════════════════ */
+const CAREERS = [
+  {name:'Biomedical Engineering',           keys:['Biology','Chemistry','Physics','Mathematics','Engineering & Technology','Medicine & Healthcare','Research / Science Fairs','Lab/Building','Systems/Machines']},
+  {name:'Medicine & Surgery',               keys:['Biology','Chemistry','Medicine & Healthcare','Physics','Research / Science Fairs','Advisor','Positive societal impact','Health']},
+  {name:'Computer Science & AI',            keys:['Computer Science','Mathematics','Engineering & Technology','Research & Academia','Coding / Tech Projects','Problem-Solving','Systems/Machines','Technology']},
+  {name:'Mechanical Engineering',           keys:['Physics','Mathematics','Engineering & Technology','Robotics / STEM Clubs','Lab/Building','Physical prototype','Systems/Machines']},
+  {name:'Data Science & Analytics',         keys:['Mathematics','Computer Science','Engineering & Technology','Research & Academia','Problem-Solving','Quantitative','Solved dataset','Technology']},
+  {name:'Architecture & Urban Design',      keys:['Architecture & Design','Mathematics','Arts & Design','Spatial/Visual','Physical prototype','Craftsman','Design Technology']},
+  {name:'Business & Entrepreneurship',      keys:['Economics','Business Studies','Business & Finance','English / Literature','Student Leadership','Visionary','Connector','Growth']},
+  {name:'Law & Political Science',          keys:['English / Literature','Economics','Law & Government','Student Leadership','Debate / MUN','Verbal Defense','History']},
+  {name:'Finance & Investment Banking',     keys:['Mathematics','Economics','Business & Finance','Business Studies','Analyst','Finance','Security']},
+  {name:'Media, Film & Communications',     keys:['English / Literature','Media & Communications','Arts & Design','Writing/Editing','Verbal/Linguistic','Creative expression']},
+  {name:'Psychology & Counselling',         keys:['Biology','English / Literature','Education & Social Sciences','Human Psychology','Empath','Advisor','Positive societal impact']},
+  {name:'International Relations & Diplomacy',keys:['History','Geography','English / Literature','Law & Government','Intergovernmental','Adventurer','Arabic Language']},
+  {name:'Environmental Science & Sustainability',keys:['Biology','Chemistry','Environmental Science','Geography','Research & Academia','Sustainability','Positive societal impact','Lab/Building']},
+  {name:'Software Engineering',             keys:['Computer Science','Mathematics','Engineering & Technology','Coding / Tech Projects','Problem-Solving','Digital / Code','Technical Mastery']},
+  {name:'Nursing & Allied Health',          keys:['Biology','Chemistry','Medicine & Healthcare','Health Education','Advisor','Positive societal impact','Helping others','Collaborative']},
+  {name:'Marketing & Advertising',          keys:['Business Studies','Economics','English / Literature','Media & Communications','Media & Communications','Connector','Creative expression','Organised event']},
+  {name:'Dentistry & Oral Health',          keys:['Biology','Chemistry','Medicine & Healthcare','Craftsman','Hands-On','Physical prototype']},
+  {name:'Pharmacy & Pharmaceutical Science',keys:['Biology','Chemistry','Physics','Medicine & Healthcare','Research & Academia','Quantitative']},
+  {name:'Aerospace & Aeronautical Engineering',keys:['Physics','Mathematics','Engineering & Technology','Robotics / STEM Clubs','Problem-Solving','Systems/Machines','Competitive']},
+  {name:'Civil & Structural Engineering',   keys:['Physics','Mathematics','Engineering & Technology','Design Technology','Architect','Physical prototype']},
+  {name:'Education & Teaching',             keys:['Education & Social Sciences','English / Literature','Moral Social & Cultural Studies (MSCS)','Empath','Positive societal impact','Helping others','Advisor']},
+  {name:'Graphic Design & Visual Arts',     keys:['Arts & Design','Design Technology','Media Studies','Spatial/Visual','Creative expression','Writing/Editing','Arts & Design']},
+  {name:'Biotechnology & Genetics',         keys:['Biology','Chemistry','Research & Academia','Research / Science Fairs','Lab/Building','Innovation','Systems/Machines']},
+  {name:'Cybersecurity',                    keys:['Computer Science','Mathematics','Engineering & Technology','Coding / Tech Projects','Craftsman','Analyst','Technology']},
+  {name:'Sports Science & Physiotherapy',   keys:['Physical Education (PE)','Biology','Health Education','Hands-On','Physical prototype','Sports & Athletics']},
+  {name:'Accounting & Auditing',            keys:['Mathematics','Business Studies','Economics','Analyst','Highly Structured','Data-driven']},
+  {name:'Urban Planning & Real Estate',     keys:['Geography','Architecture & Design','Economics','Business & Finance','Visionary','Architect']},
+  {name:'Journalism & Creative Writing',    keys:['English / Literature','Media Studies','History','Verbal/Linguistic','Writing/Editing','Verbal Defense']},
+  {name:'Marine Biology & Oceanography',    keys:['Biology','Chemistry','Environmental Science','Research & Academia','Lab/Building','Sustainability']},
+  {name:'Nutrition & Dietetics',            keys:['Biology','Chemistry','Health Education','Medicine & Healthcare','Helping others','Advisor','Balance']},
+];
+
+function scoreAll(a) {
+  const {subjects,extras,lead,solve,env,motiv,interests,
+    spectype,infoproc,flow,edugoal,persona,output,motive2,
+    social,decision,risk,curiosity,globalchallenge,workexp=[]} = a;
+
+  const pool = [
+    ...subjects, ...extras, ...interests, ...(workexp||[]),
+    lead==='School-wide representative'?'Student Leadership':null,
+    solve, env,
+    motiv==='Intellectual challenge'?'Research & Academia':null,
+    motiv==='Positive societal impact'?'Positive societal impact':null,
+    motiv==='Financial success'?'Finance':null,
+    infoproc, flow, edugoal, persona, output, motive2,
+    social, decision, risk, curiosity, globalchallenge,
+  ].filter(Boolean);
+
+  const scores = CAREERS.map(c=>{
+    const hits = c.keys.filter(k=>pool.includes(k)).length;
+    // Base score: proportional hits
+    let raw = Math.round((hits/c.keys.length)*68);
+    // Unique jitter per career to prevent ties — based on career name hash
+    const jitter = (c.name.charCodeAt(0)*7 + c.name.charCodeAt(c.name.length-1)*3) % 15;
+    raw += jitter;
+    // Clamp
+    raw = Math.min(97, Math.max(18, raw));
+    return {name:c.name, score:raw};
+  }).sort((a,b)=>b.score-a.score);
+
+  return {top:scores[0].name, score:scores[0].score, all:scores};
+}
+
+/* ══════════════════════════
+   RENDER RESULTS
+══════════════════════════ */
+function renderResults(data, _unused) {
+  const name = CP ? ((CP.first_name||'')+' '+(CP.last_name||'')).trim() : '';
+  const date = new Date(data.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  st('r-meta',(name?name+' · ':'')+date);
+  updateNavs();
+
+  let matches = data.allMatches || scoreAll({
+    subjects: data.subjects||[], extras: data.extracurriculars||[],
+    lead: data.leadership_role, solve: data.problem_solving_style,
+    env: data.thrive_environment, motiv: data.primary_motivator,
+    interests: data.career_interests||[], workexp:[]
+  }).all;
+
+  // If loaded from DB (no allMatches), enforce the saved top_match so scores
+  // displayed always match what was stored — recalculated scores can differ.
+  if (!data.allMatches && data.top_match_career && data.top_match_score != null) {
+    matches = matches.filter(m => m.name !== data.top_match_career);
+    matches.unshift({ name: data.top_match_career, score: data.top_match_score });
+  }
+
+  const top5 = matches.slice(0,5);
+  const topM = matches[0];
+
+  // Definitive career banner
+  st('r-def-career', topM.name);
+  st('r-def-pct', topM.score+'%');
+  st('r-tp', topM.score+'%');
+  st('r-tc', topM.name);
+
+  // Match bars
+  document.getElementById('r-rks').innerHTML = top5.map(m=>
+    `<div class="card rr"><div class="rrh"><span class="rrn">${m.name}</span><span class="rrp">${m.score}%</span></div><div class="rb"><div class="rf" style="width:${m.score}%"></div></div></div>`
+  ).join('');
+
+  // Pie chart
+  drawPie(top5);
+
+  // Tags & insight
+  const tags = mkTags(data);
+  document.getElementById('r-tgs').innerHTML = tags.map(t=>`<span class="tg">${t}</span>`).join('');
+  document.getElementById('r-ins').innerHTML = mkInsight(data, tags);
+  document.getElementById('r-adv').innerHTML = mkAdvice(data, topM.name, top5);
+
+  // University suggestions
+  renderUnis(data, topM.name);
+}
+
+/* ══════════════════════════
+   PIE CHART
+══════════════════════════ */
+const PIE_COLORS = ['#c9a96e','#7ab87a','#e8745a','#6ba4c9','#c97ab8','#a8c96e','#e8c35a','#6bc9b8'];
+
+function drawPie(matches) {
+  const canvas = document.getElementById('pieCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const total = matches.reduce((s,m)=>s+m.score,0);
+  let angle = -Math.PI/2;
+  ctx.clearRect(0,0,180,180);
+  matches.forEach((m,i)=>{
+    const slice = (m.score/total)*2*Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(90,90);
+    ctx.arc(90,90,85,angle,angle+slice);
+    ctx.closePath();
+    ctx.fillStyle = PIE_COLORS[i%PIE_COLORS.length];
+    ctx.fill();
+    ctx.strokeStyle='rgba(12,26,13,.4)';
+    ctx.lineWidth=2;
+    ctx.stroke();
+    angle+=slice;
+  });
+  // Legend
+  document.getElementById('pie-legend').innerHTML = matches.map((m,i)=>
+    `<div class="legend-item"><div class="legend-dot" style="background:${PIE_COLORS[i%PIE_COLORS.length]}"></div>${m.name} — ${m.score}%</div>`
+  ).join('');
+}
+
+/* ══════════════════════════
+   PERSONALITY TAGS
+══════════════════════════ */
+function mkTags(d) {
+  const t=[];
+  if(d.problem_solving_style==='Analytically') t.push('Analytical');
+  if(d.problem_solving_style==='Creatively')   t.push('Creative');
+  if(d.problem_solving_style==='Collaboratively') t.push('Collaborative');
+  if(d.problem_solving_style==='Practically')  t.push('Practical');
+  if(d.thrive_environment==='Independent and research-focused') t.push('Independent');
+  if(d.thrive_environment==='Fast-paced and dynamic') t.push('Dynamic');
+  if(d.primary_motivator==='Intellectual challenge') t.push('Curious');
+  if(d.leadership_role && d.leadership_role!=='None') t.push('Leader');
+  const raw=d.rawAnswers||{};
+  if(raw.persona==='Visionary') t.push('Visionary');
+  if(raw.persona==='Builder')   t.push('Builder');
+  if(raw.decision==='Analyst')  t.push('Analyst');
+  if(raw.decision==='Empath')   t.push('Empath');
+  return t.length ? [...new Set(t)].slice(0,5) : ['Strategic'];
+}
+
+function mkInsight(d, tags) {
+  const styleMap={
+    'Analytically':'structured, data-driven analytical approach',
+    'Creatively':'creative, divergent thinking',
+    'Collaboratively':'collaborative, people-oriented style',
+    'Practically':'practical, hands-on methodology',
+  };
+  const style=styleMap[d.problem_solving_style]||'well-rounded intellectual approach';
+  const env={
+    'Independent and research-focused':'preferring deep, focused independent work',
+    'Fast-paced and dynamic':'thriving in fast-moving, high-stakes environments',
+    'Structured and process-driven':'excelling in structured, process-driven settings',
+    'People-centered and social':'energised by social, team-based interaction',
+  }[d.thrive_environment]||'adaptable to varied environments';
+  return `<strong>${tags.join(' · ')}</strong><br><br>Your profile reflects a <strong>${style}</strong>, ${env}. This combination positions you well for roles that demand both precision and initiative.`;
+}
+
+function mkAdvice(d, topCareer, top5) {
+  const raw=d.rawAnswers||{};
+  const second=top5[1]?.name||'a related field';
+  const third=top5[2]?.name||'an adjacent discipline';
+
+  const envStr={
+    'Analytically':'systematic problem-solving approach',
+    'Creatively':'creative problem-solving instinct',
+    'Collaboratively':'collaborative communication style',
+    'Practically':'applied, hands-on learning style',
+  }[d.problem_solving_style]||'thoughtful approach';
+
+  const motStr={
+    'Positive societal impact':'driven by a desire to create real-world impact',
+    'Financial success':'motivated by building a stable, high-earning career',
+    'Intellectual challenge':'intellectually curious and challenge-seeking',
+    'Creative expression':'fuelled by creative innovation and self-expression',
+  }[d.primary_motivator]||'driven by clear personal goals';
+
+  const riskStr={
+    'Security':'You lean towards established, stable career paths, which means you will excel in structured institutions and prestigious firms.',
+    'Impact':'Your risk tolerance signals that startup environments, research labs, or public-sector innovation roles will energise you far more than corporate stability.',
+    'Growth':'You thrive under pressure and competitive ladders — career paths with clear progression, meritocracy, and performance-based advancement will suit you perfectly.',
+    'Balance':'Work-life integration matters deeply to you, pointing towards roles with autonomy, flexible structures, or defined working hours.',
+  }[raw.risk]||'';
+
+  const geoStr={
+    'UAE Focused':'Your strongest career opportunities lie within the UAE market, particularly in sectors aligned with Vision 2031 and the UAE economic diversification agenda.',
+    'Global Nomad':'You are well-suited for multinational organisations, international NGOs, or roles that require regional rotations.',
+    'The Bridge':'A hybrid career path — anchored in the UAE but with regular international exposure — aligns perfectly with your profile.',
+    'Academic Expatriate':'Pursuing postgraduate study abroad before returning will strengthen your global credentials and open elite institutional doors.',
+  }[raw.geobase]||'';
+
+  return `Based on your comprehensive responses across all four sections, your profile maps most strongly to <strong>${topCareer}</strong>, with secondary alignment to <strong>${second}</strong> and <strong>${third}</strong>.<br><br>
+Your <strong>${envStr}</strong>, combined with being <strong>${motStr}</strong>, creates a distinctive academic identity. ${riskStr}<br><br>
+${geoStr ? geoStr + '<br><br>' : ''}Your academic choices, extracurricular patterns, and personality markers consistently reinforce one another — this is a strong signal that your top career match is not coincidental but a genuine fit with your core identity. We recommend exploring internships, competitions, or early projects in <strong>${topCareer}</strong> to validate this alignment before committing to a degree pathway.`;
+}
+
+/* ══════════════════════════
+   UNIVERSITY SUGGESTIONS
+══════════════════════════ */
+const UNI_DB = {
+  'Biomedical Engineering':      { reach:['Johns Hopkins University','Imperial College London','ETH Zurich'], target:['Khalifa University','University of Birmingham','University of Toronto'], safety:['American University of Sharjah','Heriot-Watt University Dubai','University of Wollongong in Dubai'] },
+  'Medicine & Surgery':          { reach:['University of Oxford','Harvard Medical School','University of Melbourne'], target:['UAE University (CMHS)','University of Glasgow','University of Sharjah'], safety:['Gulf Medical University','RAK Medical & Health Sciences University','University of Nicosia'] },
+  'Computer Science & AI':       { reach:['MIT','Stanford University','ETH Zurich'], target:['NYU Abu Dhabi','University of Edinburgh','University of Waterloo'], safety:['American University in Dubai','Middlesex University Dubai','Abu Dhabi University'] },
+  'Mechanical Engineering':      { reach:['MIT','TU Munich','Imperial College London'], target:['Khalifa University','University of Southampton','RMIT University'], safety:['Higher Colleges of Technology','Manipal University Dubai','Murdoch University Dubai'] },
+  'Data Science & Analytics':    { reach:['Carnegie Mellon University','UC Berkeley','University of Cambridge'], target:['MBZUAI Abu Dhabi','University of Edinburgh','University of Melbourne'], safety:['Amity University Dubai','Curtin University Dubai','University of Wollongong in Dubai'] },
+  'Architecture & Urban Design': { reach:['Architectural Association London','Columbia University GSAPP','Delft University of Technology'], target:['American University of Sharjah','University of Sydney','Cardiff University'], safety:['Caledonian College of Engineering','BITS Pilani Dubai','Manipal University Dubai'] },
+  'Business & Entrepreneurship': { reach:['Wharton School (UPenn)','INSEAD','London Business School'], target:['American University of Sharjah','University of Melbourne Business School','IE Business School'], safety:['University of Dubai','Amity University Dubai','Skyline University College'] },
+  'Law & Political Science':     { reach:['University of Oxford','University of Cambridge','LSE'], target:['UAE University Faculty of Law','University of Exeter','University of Glasgow'], safety:['University of Dubai School of Law','British University in Dubai','City University Ajman'] },
+  'Finance & Investment Banking': { reach:['London School of Economics','New York University Stern','University of Hong Kong'], target:['American University of Sharjah','University of Leeds','Monash University'], safety:['Middlesex University Dubai','University of Wollongong in Dubai','Abu Dhabi University'] },
+  'DEFAULT':                     { reach:['University of Oxford','MIT','ETH Zurich'], target:['NYU Abu Dhabi','Khalifa University','University of Melbourne'], safety:['American University of Sharjah','Manipal University Dubai','Amity University Dubai'] },
+};
+
+function renderUnis(data, topCareer) {
+  const db = UNI_DB[topCareer] || UNI_DB['DEFAULT'];
+  document.getElementById('r-unis').innerHTML = `
+    <div class="uni-col">
+      <div class="uni-col-label reach">🎯 Reach Schools</div>
+      ${db.reach.map(u=>`<div class="uni-item">${u}<span>Highly competitive entry</span></div>`).join('')}
+    </div>
+    <div class="uni-col">
+      <div class="uni-col-label target">✅ Target Schools</div>
+      ${db.target.map(u=>`<div class="uni-item">${u}<span>Well-matched to your profile</span></div>`).join('')}
+    </div>
+    <div class="uni-col">
+      <div class="uni-col-label safety">🛡 Safety Schools</div>
+      ${db.safety.map(u=>`<div class="uni-item">${u}<span>Strong acceptance likelihood</span></div>`).join('')}
+    </div>`;
+}
+
+/* ══════════════════════════
+   PDF DOWNLOAD
+══════════════════════════ */
+async function downloadPDF() {
+  const btn = document.getElementById('pdf-btn');
+  btn.textContent = '⏳ Generating…'; btn.disabled=true;
+  try {
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const W=210, M=18, y={v:20};
+    const line=()=>{doc.setDrawColor(46,100,55);doc.setLineWidth(0.3);doc.line(M,y.v,W-M,y.v);y.v+=6;};
+    const h=(txt,sz=14,clr=[20,60,28])=>{doc.setFontSize(sz);doc.setTextColor(...clr);doc.text(txt,M,y.v);y.v+=sz*0.5+3;};
+    const t=(txt,sz=10,clr=[40,85,48])=>{doc.setFontSize(sz);doc.setTextColor(...clr);const lines=doc.splitTextToSize(txt,W-M*2);doc.text(lines,M,y.v);y.v+=lines.length*(sz*0.4+1.5)+2;};
+    const chk=()=>{if(y.v>270){doc.addPage();y.v=20;}};
+
+    // Header bar
+    doc.setFillColor(22,43,24);doc.rect(0,0,W,28,'F');
+    doc.setFontSize(22);doc.setTextColor(201,169,110);doc.text('EduPath UAE',M,16);
+    doc.setFontSize(9);doc.setTextColor(200,220,200);
+    const name=CP?((CP.first_name||'')+' '+(CP.last_name||'')).trim():'Student';
+    const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    doc.text(`${name}  ·  ${date}`,M,23);
+    y.v=36;
+
+    h('Career Assessment Report',18);
+    line();
+
+    // Top match
+    const tpEl=document.getElementById('r-tp');
+    const tcEl=document.getElementById('r-tc');
+    if(tpEl&&tcEl){
+      h('Your Definitive Career Match',13,[180,130,60]);
+      doc.setFontSize(28);doc.setTextColor(180,130,60);doc.text(tpEl.textContent,M,y.v);
+      doc.setFontSize(14);doc.setTextColor(20,60,28);doc.text(tcEl.textContent,M+30,y.v);
+      y.v+=12;line();
+    }
+
+    // Rankings
+    h('Career Match Rankings',12);
+    document.querySelectorAll('#r-rks .rr').forEach(row=>{
+      chk();
+      const n=row.querySelector('.rrn')?.textContent||'';
+      const p=row.querySelector('.rrp')?.textContent||'';
+      doc.setFontSize(10);doc.setTextColor(40,85,48);doc.text(n,M,y.v);
+      doc.setTextColor(180,130,60);doc.text(p,W-M-10,y.v);
+      y.v+=6;
+    });
+    line();
+
+    // Insights
+    chk(); h('Personality Insights',12);
+    const tags=[...document.querySelectorAll('#r-tgs .tg')].map(e=>e.textContent).join(' · ');
+    t(tags,10,[180,130,60]);
+    const ins=document.getElementById('r-ins')?.innerText||'';
+    t(ins);line();
+
+    chk(); h('In-Depth Profile Analysis',12);
+    const adv=document.getElementById('r-adv')?.innerText||'';
+    t(adv);line();
+
+    // Universities
+    chk(); h('University Suggestions',12);
+    const ucols=document.querySelectorAll('.uni-col');
+    ucols.forEach(col=>{
+      chk();
+      const lbl=(col.querySelector('.uni-col-label')?.textContent||'').replace(/[^\x00-\x7F]/g,'').trim();
+      doc.setFontSize(10);doc.setTextColor(180,130,60);doc.text(lbl,M,y.v);y.v+=5;
+      col.querySelectorAll('.uni-item').forEach(item=>{
+        chk();
+        const nm=item.childNodes[0]?.textContent?.trim()||'';
+        const sub=item.querySelector('span')?.textContent||'';
+        doc.setFontSize(9);doc.setTextColor(40,85,48);doc.text(`• ${nm}`,M+4,y.v);
+        doc.setTextColor(70,130,80);doc.text(sub,M+60,y.v);
+        y.v+=5;
+      });
+      y.v+=3;
+    });
+
+    // Footer
+    doc.setFontSize(8);doc.setTextColor(70,130,80);
+    doc.text('Generated by EduPath UAE · www.edupathuae.com',M,290);
+
+    doc.save(`EduPath_Report_${(name||'Student').replace(/ /g,'_')}_${new Date().getFullYear()}.pdf`);
+    toast('PDF downloaded! 📄','ok');
+  } catch(e) {
+    console.error(e);
+    toast('PDF generation failed — try again','err');
+  }
+  btn.textContent='⬇ Download PDF'; btn.disabled=false;
+}
+
+/* ══════════════════════════
+   FORM HELPERS
+══════════════════════════ */
+function tog(el){
+  const g=el.dataset.g;
+  if(el.hasAttribute('data-r')) document.querySelectorAll(`.opt[data-g="${g}"]`).forEach(o=>o.classList.remove('sel'));
+  el.classList.toggle('sel');
+}
+function gm(g){return[...document.querySelectorAll(`.opt[data-g="${g}"].sel`)].map(o=>o.dataset.v);}
+function gr(g){const e=document.querySelector(`.opt[data-g="${g}"].sel`);return e?e.dataset.v:null;}
+function gv(id){const e=document.getElementById(id);return e?e.value:'';}
+
+function resetForm(){
+  document.querySelectorAll('.opt.sel').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.subj-chk.on').forEach(c=>toggleSubj(c,''));
+  document.getElementById('q-cur').value='';
+  document.getElementById('q-grading').value='';
+  setStep(1);
+}
+
+/* ══════════════════════════
+   UI HELPERS
+══════════════════════════ */
+function setBtn(id,loading,text){
+  const b=document.getElementById(id);if(!b)return;
+  b.disabled=loading;
+  b.innerHTML=loading?`<span class="spin"></span>${text}`:text;
+}
+function showE(id,msg){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.classList.add('show');}
+let _tt;
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show'+(type?' '+type:'');
+  clearTimeout(_tt);_tt=setTimeout(()=>{t.className='toast';},3800);
+}
+function friendlyErr(msg){
+  if(!msg) return 'Something went wrong. Please try again.';
+  if(msg.includes('Invalid login credentials')) return 'Incorrect email or password.';
+  if(msg.includes('Email not confirmed'))        return 'Please confirm your email. Check your inbox.';
+  if(msg.includes('User already registered'))    return 'An account with this email already exists. Try logging in.';
+  if(msg.includes('Password should be'))         return 'Password must be at least 6 characters.';
+  return msg;
+}
+</script>
+</body>
+</html>

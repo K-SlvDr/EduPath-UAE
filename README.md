@@ -1,1 +1,1 @@
-# EduPath-UAE
+# EduPath-TPS

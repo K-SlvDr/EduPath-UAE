@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EduPath UAE</title>
+<title>EduPath TPS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -30,10 +30,25 @@ h1,h2,h3,h4{font-family:'EB Garamond',Georgia,serif;font-weight:600;line-height:
 .page.active{display:flex}
 
 /* Loading */
-#ls{position:fixed;inset:0;background:var(--fd);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+#ls{position:fixed;inset:0;background:var(--fd);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .8s;overflow:hidden}
 #ls.gone{opacity:0;pointer-events:none}
-.ll{font-family:'EB Garamond',serif;font-size:1.9rem;color:var(--sand);animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+#ls::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(46,84,53,0.22) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 20% 80%,rgba(201,169,110,0.07) 0%,transparent 55%);pointer-events:none}
+.ll-wrap{display:flex;flex-direction:column;align-items:center;gap:0;position:relative;z-index:1;text-align:center;padding:0 32px;max-width:600px}
+.ll-logo{font-family:'EB Garamond',serif;font-size:2.6rem;font-weight:700;color:var(--sand);letter-spacing:.04em;margin-bottom:6px;animation:fadeUp .7s ease forwards}
+.ll-logo span{color:var(--t1);font-weight:400}
+.ll-tagline{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--t3);margin-bottom:48px;animation:fadeUp .7s ease .12s both}
+.ll-spinner{width:42px;height:42px;border:2.5px solid rgba(201,169,110,.15);border-top-color:var(--sand);border-radius:50%;animation:rot .9s linear infinite;margin-bottom:20px}
+.ll-status{font-size:.82rem;color:var(--t2);margin-bottom:52px;animation:pulse 1.6s ease-in-out infinite;min-height:1.2em}
+.ll-divider{width:48px;height:1px;background:linear-gradient(90deg,transparent,var(--sand),transparent);margin:0 auto 32px}
+.ll-time{font-size:.78rem;color:var(--sand);letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px;animation:fadeUp .7s ease .3s both}
+.ll-quote{font-family:'EB Garamond',serif;font-size:1.15rem;font-style:italic;color:var(--t1);line-height:1.7;margin-bottom:10px;animation:fadeUp .7s ease .45s both;opacity:.88}
+.ll-author{font-size:.78rem;color:var(--sand);letter-spacing:.08em;animation:fadeUp .7s ease .6s both}
+.ll-dots{display:flex;gap:8px;margin-top:44px;animation:fadeUp .7s ease .7s both}
+.ll-dot{width:6px;height:6px;border-radius:50%;background:rgba(201,169,110,.25);animation:dotPulse 1.4s ease-in-out infinite}
+.ll-dot:nth-child(2){animation-delay:.2s}
+.ll-dot:nth-child(3){animation-delay:.4s}
+@keyframes dotPulse{0%,100%{background:rgba(201,169,110,.2);transform:scale(1)}50%{background:rgba(201,169,110,.8);transform:scale(1.3)}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
 .amb{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 75% 15%,rgba(46,84,53,0.13) 0%,transparent 65%),radial-gradient(ellipse 40% 35% at 15% 85%,rgba(201,169,110,0.045) 0%,transparent 55%)}
 
 /* Nav */
@@ -304,13 +319,26 @@ h1.hero em{color:var(--sand);font-style:italic}
   .fr{grid-template-columns:1fr}
   .pw{gap:4px}
   .snm{display:none}
+  .job-grid{grid-template-columns:1fr!important}
   footer{flex-direction:column;gap:6px;text-align:center;padding:16px 20px}
 }
 </style>
 </head>
 <body>
 <div class="amb"></div>
-<div id="ls"><div class="ll">EduPath UAE</div></div>
+<div id="ls">
+  <div class="ll-wrap">
+    <div class="ll-logo">EduPath <span>TPS</span></div>
+    <div class="ll-tagline">School Connection for Your Career Guidance</div>
+    <div class="ll-spinner"></div>
+    <div class="ll-status" id="ll-status">Preparing your experience…</div>
+    <div class="ll-divider"></div>
+    <div class="ll-time">⏳ Give us 3–5 minutes!</div>
+    <div class="ll-quote">"Life is about choices. Some we regret, some we're proud of. Some will haunt us forever. The message: we are what we chose to be."</div>
+    <div class="ll-author">— Graham Brown</div>
+    <div class="ll-dots"><div class="ll-dot"></div><div class="ll-dot"></div><div class="ll-dot"></div></div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <!-- Reset Password Modal -->
@@ -329,7 +357,7 @@ h1.hero em{color:var(--sand);font-style:italic}
 <!-- ══ LANDING ══ -->
 <div id="landing" class="page">
   <nav>
-    <button class="logo" onclick="goTo('landing')">EduPath <span>UAE</span></button>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>TPS</span></button>
     <div class="nr">
       <button class="bg2" onclick="goTo('login')">Log in</button>
       <button class="bs" onclick="goTo('signup')">Sign up free</button>
@@ -337,16 +365,16 @@ h1.hero em{color:var(--sand);font-style:italic}
   </nav>
   <div class="body">
     <div>
-      <p class="hl fu">AI-Powered Career Guidance</p>
+      <p class="hl fu">School Connection for Your Career Guidance</p>
       <h1 class="hero fu d1">Discover the career <em>built for you.</em></h1>
-      <p class="hd fu d2">EduPath UAE uses intelligent analysis to match your academic profile, strengths, and personality to the career where you'll truly thrive — designed for UAE students.</p>
+      <p class="hd fu d2">EduPath TPS uses intelligent analysis to match your academic profile, strengths, and personality to the career where you'll truly thrive — designed for UAE students.</p>
       <div class="hb fu d3">
         <button class="bs bl" onclick="goTo('signup')">Get Started Free →</button>
         <button class="bo bl" onclick="goTo('login')">Log in</button>
       </div>
       <div class="hp fu d4">
-        <div class="pill">🎯 AI-Powered Matching</div>
-        <div class="pill">🇦🇪 Built for UAE Students</div>
+        <div class="pill">🎯 Rule-based Matching</div>
+        <div class="pill">🎓 Built for TPSian Students</div>
         <div class="pill">📊 Evidence-Based Results</div>
       </div>
     </div>
@@ -360,13 +388,13 @@ h1.hero em{color:var(--sand);font-style:italic}
       <div class="bi"><div class="bn3"><span>Architecture</span><span>33%</span></div><div class="btr"><div class="bfl" style="width:33%"></div></div></div>
     </div>
   </div>
-  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE · All rights reserved</span><span>Empowering students across the Emirates</span></footer>
+  <footer><span class="lsm">EduPath TPS</span><span>© 2026 EduPath TPS · All rights reserved</span><span>Empowering Students of the Highest Rank</span></footer>
 </div>
 
 <!-- ══ LOGIN ══ -->
 <div id="login" class="page">
   <nav>
-    <button class="logo" onclick="goTo('landing')">EduPath <span>UAE</span></button>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>TPS</span></button>
     <div class="nr"><button class="bg2" onclick="goTo('signup')">Create account</button></div>
   </nav>
   <div class="aw">
@@ -381,22 +409,85 @@ h1.hero em{color:var(--sand);font-style:italic}
     </div>
     <div class="ar">
       <div class="ab">
-        <h3>Welcome back</h3>
-        <p class="ah">Log in to continue your career journey</p>
-        <div id="le" class="em"></div>
-        <div class="fg"><label class="fl">Email address</label><input type="email" id="li-e" placeholder="you@email.com"></div>
-        <div class="fg"><label class="fl">Password <button class="fg2" onclick="openForgot()">Forgot password?</button></label><input type="password" id="li-p" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
-        <button class="bs bf" id="li-btn" onclick="doLogin()">Log in</button>
-        <div class="asw">New here? <a onclick="goTo('signup')">Create a free account</a></div>
+        <!-- Login tabs -->
+        <div style="display:flex;gap:0;margin-bottom:24px;border:1px solid var(--br);border-radius:9px;overflow:hidden">
+          <button id="tab-student" onclick="switchLoginTab('student')" style="flex:1;padding:10px;background:var(--sand);color:var(--fd);border:none;font-family:'Source Sans 3',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s">Student Login</button>
+          <button id="tab-admin" onclick="switchLoginTab('admin')" style="flex:1;padding:10px;background:transparent;color:var(--t2);border:none;font-family:'Source Sans 3',sans-serif;font-size:.88rem;cursor:pointer;transition:all .2s">Admin Account</button>
+        </div>
+
+        <!-- Student login panel -->
+        <div id="panel-student">
+          <h3>Welcome back</h3>
+          <p class="ah">Log in to continue your career journey</p>
+          <div id="le" class="em"></div>
+          <div class="fg"><label class="fl">Email address</label><input type="email" id="li-e" placeholder="you@email.com"></div>
+          <div class="fg"><label class="fl">Password <button class="fg2" onclick="openForgot()">Forgot password?</button></label><input type="password" id="li-p" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+          <button class="bs bf" id="li-btn" onclick="doLogin()">Log in</button>
+          <div class="asw">New here? <a onclick="goTo('signup')">Create a free account</a></div>
+        </div>
+
+        <!-- Admin login panel -->
+        <div id="panel-admin" style="display:none">
+          <h3>Admin Account</h3>
+          <p class="ah">Restricted access — TPS staff only</p>
+          <div id="adm-le" class="em"></div>
+          <div class="fg"><label class="fl">Username</label><input type="text" id="adm-u" placeholder="ADMIN@TPS" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+          <div class="fg"><label class="fl">Password</label><input type="password" id="adm-p" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+          <button class="bs bf" id="adm-btn" onclick="doAdminLogin()">Log in as Admin</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ══ ADMIN PORTAL ══ -->
+<div id="admin-portal" class="page">
+  <nav>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>TPS</span></button>
+    <div class="nu"><span class="nn">Admin</span><button class="bt" onclick="doAdminLogout()">Log out</button></div>
+  </nav>
+  <div style="flex:1;max-width:1100px;margin:0 auto;padding:44px 48px;width:100%">
+    <h2 style="font-family:'EB Garamond',serif;font-size:2rem;margin-bottom:4px">Admin Portal</h2>
+    <p style="color:var(--t2);font-size:.9rem;margin-bottom:32px">Student results by class section</p>
+
+    <!-- Section panels grid -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px" id="adm-panels">
+      <!-- Grade 12 only -->
+      <div style="grid-column:1/-1;font-family:'EB Garamond',serif;font-size:1.2rem;color:var(--sand);border-bottom:1px solid var(--br);padding-bottom:8px;margin-bottom:4px">Grade 12</div>
+      <button class="card card-h" style="padding:20px;text-align:left;border:none;cursor:pointer;background:var(--card)" onclick="openSection('Grade 12 A')">
+        <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px">Section</div>
+        <div style="font-family:'EB Garamond',serif;font-size:1.5rem;color:var(--sand)">Grade 12 A</div>
+      </button>
+      <button class="card card-h" style="padding:20px;text-align:left;border:none;cursor:pointer;background:var(--card)" onclick="openSection('Grade 12 B')">
+        <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px">Section</div>
+        <div style="font-family:'EB Garamond',serif;font-size:1.5rem;color:var(--sand)">Grade 12 B</div>
+      </button>
+      <button class="card card-h" style="padding:20px;text-align:left;border:none;cursor:pointer;background:var(--card)" onclick="openSection('Grade 12 C')">
+        <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px">Section</div>
+        <div style="font-family:'EB Garamond',serif;font-size:1.5rem;color:var(--sand)">Grade 12 C</div>
+      </button>
+      <button class="card card-h" style="padding:20px;text-align:left;border:none;cursor:pointer;background:var(--card)" onclick="openSection('Grade 12 D')">
+        <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px">Section</div>
+        <div style="font-family:'EB Garamond',serif;font-size:1.5rem;color:var(--sand)">Grade 12 D</div>
+      </button>
+    </div>
+
+    <!-- Section detail view -->
+    <div id="adm-section-view" style="display:none">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px">
+        <button class="bo" style="padding:8px 16px;font-size:.82rem" onclick="closeSection()">← Back</button>
+        <h3 id="adm-section-title" style="font-family:'EB Garamond',serif;font-size:1.6rem"></h3>
+      </div>
+      <div id="adm-section-content"></div>
+    </div>
+  </div>
+  <footer><span class="lsm">EduPath TPS</span><span>© 2026 EduPath TPS · Admin</span><span></span></footer>
+</div>
+
 <!-- ══ SIGNUP ══ -->
 <div id="signup" class="page">
   <nav>
-    <button class="logo" onclick="goTo('landing')">EduPath <span>UAE</span></button>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>TPS</span></button>
     <div class="nr"><button class="bg2" onclick="goTo('login')">Log in</button></div>
   </nav>
   <div class="aw">
@@ -414,29 +505,25 @@ h1.hero em{color:var(--sand);font-style:italic}
         <h3>Create your account</h3>
         <p class="ah">Start your personalised career journey today</p>
         <div id="se" class="em"></div>
-        <!-- Profile picture upload -->
-        <div class="pfp-wrap">
-          <div class="pfp-preview" id="su-pfp-prev" onclick="document.getElementById('pfp-input').click()">
-            <span id="su-pfp-initials">📷</span>
-          </div>
-          <div>
-            <button class="btn-pfp" onclick="document.getElementById('pfp-input').click()">Upload Photo</button>
-            <p>Optional · JPG or PNG</p>
-          </div>
-          <input type="file" id="pfp-input" accept="image/*" onchange="previewPfp(this)">
-        </div>
         <div class="fr">
-          <div class="fg"><label class="fl">First name</label><input type="text" id="su-f" placeholder="Ahmed" oninput="updatePfpInitials()"></div>
+          <div class="fg"><label class="fl">First name</label><input type="text" id="su-f" placeholder="Ahmed"></div>
           <div class="fg"><label class="fl">Last name</label><input type="text" id="su-l" placeholder="Al Mansoori"></div>
         </div>
         <div class="fg"><label class="fl">Email address</label><input type="email" id="su-e" placeholder="you@email.com"></div>
-        <div class="fg"><label class="fl">School / Institution</label><input type="text" id="su-s" placeholder="e.g. GEMS Wellington Academy"></div>
         <div class="fg">
           <label class="fl">Current grade / year</label>
           <select id="su-g">
             <option value="">Select grade...</option>
-            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
-            <option>Foundation Year</option><option>Year 1 University</option><option>Year 2+ University</option>
+            <option>Grade 12</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Section</label>
+          <select id="su-s">
+            <option value="">Select section...</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
           </select>
         </div>
         <div class="fg"><label class="fl">Password</label><input type="password" id="su-p" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')doSignup()"></div>
@@ -450,7 +537,7 @@ h1.hero em{color:var(--sand);font-style:italic}
 <!-- ══ DASHBOARD ══ -->
 <div id="dashboard" class="page">
   <nav>
-    <button class="logo" onclick="goTo('landing')">EduPath <span>UAE</span></button>
+    <button class="logo" onclick="goTo('landing')">EduPath <span>TPS</span></button>
     <div class="nu">
       <span class="nn" id="d-nn"></span>
       <div class="av" id="d-av" onclick="goTo('profile-settings')"></div>
@@ -471,13 +558,13 @@ h1.hero em{color:var(--sand);font-style:italic}
       <div class="al2" id="al"></div>
     </div>
   </div>
-  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE</span><span>Empowering students across the Emirates</span></footer>
+  <footer><span class="lsm">EduPath TPS</span><span>© 2026 EduPath TPS</span><span>Empowering Students of the Highest Rank</span></footer>
 </div>
 
 <!-- ══ PROFILE SETTINGS ══ -->
 <div id="profile-settings" class="page">
   <nav>
-    <button class="logo" onclick="goTo('dashboard')">EduPath <span>UAE</span></button>
+    <button class="logo" onclick="goTo('dashboard')">EduPath <span>TPS</span></button>
     <div class="nu">
       <div class="av" id="ps-av"></div>
       <button class="bt" onclick="doLogout()">Log out</button>
@@ -487,29 +574,27 @@ h1.hero em{color:var(--sand);font-style:italic}
     <h2 style="font-size:1.9rem;margin-bottom:6px">Profile Settings</h2>
     <p style="color:var(--t2);font-size:.9rem;margin-bottom:32px">Update your personal details and photo</p>
     <div class="em" id="ps-err"></div>
-    <div class="pfp-wrap" style="margin-bottom:28px">
-      <div class="profile-big-av" id="ps-pfp-prev" onclick="document.getElementById('ps-pfp-input').click()">
-        <span id="ps-pfp-initials"></span>
-      </div>
-      <div>
-        <button class="btn-pfp" onclick="document.getElementById('ps-pfp-input').click()">Change Photo</button>
-        <p style="font-size:.78rem;color:var(--t3);margin-top:4px">JPG or PNG, max 2MB</p>
-      </div>
-      <input type="file" id="ps-pfp-input" accept="image/*" onchange="previewSettingsPfp(this)">
-    </div>
     <div class="fr fg"><div class="fg"><label class="fl">First name</label><input type="text" id="ps-f"></div><div class="fg"><label class="fl">Last name</label><input type="text" id="ps-l"></div></div>
-    <div class="fg"><label class="fl">School / Institution</label><input type="text" id="ps-s"></div>
-    <div class="fg"><label class="fl">Grade / Year</label><select id="ps-g"><option value="">Select grade...</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option><option>Foundation Year</option><option>Year 1 University</option><option>Year 2+ University</option></select></div>
+    <div class="fg"><label class="fl">Grade / Year</label><select id="ps-g"><option value="">Select grade...</option><option>Grade 12</option></select></div>
+    <div class="fg"><label class="fl">Section</label>
+      <select id="ps-s">
+        <option value="">Select section...</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+      </select>
+    </div>
     <button class="bs" style="padding:11px 28px" id="ps-btn" onclick="saveProfile()">Save Changes</button>
     <button class="bo" style="padding:11px 24px;margin-left:10px" onclick="goTo('dashboard')">Cancel</button>
   </div>
-  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE</span><span></span></footer>
+  <footer><span class="lsm">EduPath TPS</span><span>© 2026 EduPath TPS</span><span></span></footer>
 </div>
 
 <!-- ══ ASSESSMENT (4 steps) ══ -->
 <div id="assessment" class="page">
   <nav>
-    <button class="logo" onclick="goTo('dashboard')">EduPath <span>UAE</span></button>
+    <button class="logo" onclick="goTo('dashboard')">EduPath <span>TPS</span></button>
     <div class="nu"><span class="nn" id="a-nn"></span><div class="av" id="a-av"></div><button class="bt" onclick="doLogout()">Log out</button></div>
   </nav>
   <div class="body">
@@ -530,42 +615,33 @@ h1.hero em{color:var(--sand);font-style:italic}
       <p class="ps">Tell us about your studies, subjects, and learning style.</p>
 
       <div class="qb">
-        <div class="ql">What curriculum are you following?</div>
-        <div class="fg"><select id="q-cur">
-          <option value="">Select curriculum...</option>
-          <option>British (A-Levels / IGCSEs)</option>
-          <option>American (AP / SAT)</option>
-          <option>IB (International Baccalaureate)</option>
-          <option>UAE National Curriculum</option>
-          <option>Indian (CBSE)</option>
-          <option>Indian (ICSE / ISC)</option>
-          <option>Filipino (DepEd K-12)</option>
-          <option>French Baccalaureate</option>
-          <option>German Abitur</option>
-          <option>Australian (ATAR)</option>
-          <option>Canadian (Provincial)</option>
-          <option>Other</option>
-        </select></div>
+        <div class="ql">What is your recent highest grade?</div>
+        <div class="oc">
+          <div class="opt" data-g="grade_range" data-v=">75%" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">&gt;75%</span></div>
+          <div class="opt" data-g="grade_range" data-v="75%–80%" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">75%–80%</span></div>
+          <div class="opt" data-g="grade_range" data-v="80%–85%" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">80%–85%</span></div>
+          <div class="opt" data-g="grade_range" data-v="85%–90%" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">85%–90%</span></div>
+          <div class="opt" data-g="grade_range" data-v="95%–100%" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">95%–100%</span></div>
+        </div>
       </div>
 
       <div class="qb">
-        <div class="ql">What grading system applies to you?</div>
-        <div class="fg"><select id="q-grading">
-          <option value="">Select grading system...</option>
-          <option>Letter Grades (A–F)</option>
-          <option>GPA (4.0 Scale — Unweighted)</option>
-          <option>GPA (4.0 Scale — Weighted)</option>
-          <option>Percentage (0–100%)</option>
-          <option>CGPA (10-point Scale)</option>
-          <option>IB Points (1–45)</option>
-          <option>A-Level Grades (A*–U)</option>
-          <option>Marks out of 100 (Board Exams)</option>
-        </select></div>
+        <div class="ql">What career do you plan to take?</div>
+        <div class="oc">
+          <div class="opt" data-g="career_plan" data-v="Architect/Designer" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Architect / Designer</strong> Building, spatial design, and creative environments.</span></div>
+          <div class="opt" data-g="career_plan" data-v="Nurse/Medtech" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Nurse / Medtech</strong> Healthcare, patient care, and medical technology.</span></div>
+          <div class="opt" data-g="career_plan" data-v="Professor/Teacher" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Professor / Teacher</strong> Education, mentoring, and academic research.</span></div>
+          <div class="opt" data-g="career_plan" data-v="AI Integrated Careers" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>AI Integrated Careers</strong> Technology, machine learning, and the future of work.</span></div>
+          <div class="opt" data-g="career_plan" data-v="Others" data-r onclick="togCareerOther(this)"><div class="ob c">●</div><span class="ot"><strong>Others</strong> Something else — specify below.</span></div>
+        </div>
+        <div id="career-plan-other-wrap" style="display:none;margin-top:10px">
+          <input type="text" id="q-career-other" placeholder="e.g. Marine Biologist, Game Developer, Chef…">
+        </div>
+        <input type="hidden" id="q-grading" value="">
       </div>
 
       <div class="qb">
         <div class="ql">Your subjects and individual grades</div>
-        <div class="ql-hint">Check a subject to include it, then select your grade for it.</div>
         <div id="subj-list"></div>
       </div>
 
@@ -866,6 +942,28 @@ h1.hero em{color:var(--sand);font-style:italic}
         </div>
       </div>
 
+      <div class="qb">
+        <div class="ql">How comfortable are you with physical, hands-on patient care?</div>
+        <div class="ql-hint">Healthcare Aptitude</div>
+        <div class="oc">
+          <div class="opt" data-g="patientcare" data-v="Very comfortable" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Very comfortable</strong> I am at ease with direct physical care, procedures, and clinical environments.</span></div>
+          <div class="opt" data-g="patientcare" data-v="Somewhat comfortable" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Somewhat comfortable</strong> I can handle it but prefer other aspects like planning or coordinating care.</span></div>
+          <div class="opt" data-g="patientcare" data-v="Prefer indirect" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Prefer indirect roles</strong> I prefer supporting patients through research, education, or administration.</span></div>
+          <div class="opt" data-g="patientcare" data-v="Not applicable" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Not applicable</strong> Healthcare is not a field I am considering.</span></div>
+        </div>
+      </div>
+
+      <div class="qb">
+        <div class="ql">How do you respond when someone around you is in pain or distress?</div>
+        <div class="ql-hint">Empathy & Emotional Resilience</div>
+        <div class="oc">
+          <div class="opt" data-g="empathy" data-v="Calm and action-oriented" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Calm and action-oriented</strong> I stay composed and immediately focus on what I can do to help.</span></div>
+          <div class="opt" data-g="empathy" data-v="Deeply empathetic" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Deeply empathetic</strong> I feel their pain strongly, which drives me to give the best possible care.</span></div>
+          <div class="opt" data-g="empathy" data-v="Analytical" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>Analytical</strong> I assess the situation first before deciding how to respond.</span></div>
+          <div class="opt" data-g="empathy" data-v="I find it difficult" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot"><strong>I find it difficult</strong> Emotional situations are challenging for me and I prefer structured, low-emotion environments.</span></div>
+        </div>
+      </div>
+
       <div class="pa"><button class="bo" onclick="sv(3)">← Back</button><button class="bs" onclick="nx(3)">Next Step →</button></div>
     </div>
 
@@ -978,25 +1076,26 @@ h1.hero em{color:var(--sand);font-style:italic}
 
       <div class="qb">
         <div class="ql">Where do you plan to study?</div>
+        <div class="ql-hint">Choose up to 3 options.</div>
         <div class="oc">
-          <div class="opt" data-g="sloc" data-v="In the UAE" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">In the UAE</span></div>
-          <div class="opt" data-g="sloc" data-v="UK / Europe" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">UK / Europe</span></div>
-          <div class="opt" data-g="sloc" data-v="USA / Canada" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">USA / Canada</span></div>
-          <div class="opt" data-g="sloc" data-v="Australia / New Zealand" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Australia / New Zealand</span></div>
-          <div class="opt" data-g="sloc" data-v="Undecided" data-r onclick="tog(this)"><div class="ob c">●</div><span class="ot">Undecided</span></div>
+          <div class="opt" data-g="sloc" data-v="In the UAE" onclick="togSloc(this)"><div class="ob">✓</div><span class="ot">In the UAE</span></div>
+          <div class="opt" data-g="sloc" data-v="UK / Europe" onclick="togSloc(this)"><div class="ob">✓</div><span class="ot">UK / Europe</span></div>
+          <div class="opt" data-g="sloc" data-v="USA / Canada" onclick="togSloc(this)"><div class="ob">✓</div><span class="ot">USA / Canada</span></div>
+          <div class="opt" data-g="sloc" data-v="Philippines" onclick="togSloc(this)"><div class="ob">✓</div><span class="ot">Philippines</span></div>
+          <div class="opt" data-g="sloc" data-v="Undecided" onclick="togSloc(this)"><div class="ob">✓</div><span class="ot">Undecided</span></div>
         </div>
       </div>
 
-      <div class="pa"><button class="bo" onclick="sv(4)">← Back</button><button class="bs" id="sub-btn" onclick="submitA()">Submit & View Results →</button></div>
+      <div class="pa"><button class="bo" onclick="sv(4)">← Back</button><button class="bs" id="sub-btn" onclick="showAnalysisLoader();submitA()">Submit & View Results →</button></div>
     </div>
   </div>
-  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE</span><span>Empowering students across the Emirates</span></footer>
+  <footer><span class="lsm">EduPath TPS</span><span>© 2026 EduPath TPS</span><span>Empowering Students of the Highest Rank</span></footer>
 </div>
 
 <!-- ══ RESULTS ══ -->
 <div id="results" class="page">
   <nav>
-    <button class="logo" onclick="goTo('dashboard')">EduPath <span>UAE</span></button>
+    <button class="logo" onclick="goTo('dashboard')">EduPath <span>TPS</span></button>
     <div class="nu"><span class="nn" id="r-nn"></span><div class="av" id="r-av"></div><button class="bt" onclick="doLogout()">Log out</button></div>
   </nav>
   <div class="body" id="results-body">
@@ -1031,7 +1130,13 @@ h1.hero em{color:var(--sand);font-style:italic}
       <div class="pie-legend" id="pie-legend"></div>
     </div>
 
-    <!-- Personality & Insights -->
+    <!-- Job Opportunities -->
+    <div class="uni-section fu d2" id="r-jobs-section">
+      <div class="sh" style="margin-bottom:16px">💼 Job Opportunities From Your Top Careers</div>
+      <div id="r-jobs"></div>
+    </div>
+
+    <!-- Personality &amp; Insights -->
     <div class="ir fu d2">
       <div class="ic card">
         <div class="il">Personality Insights</div>
@@ -1046,7 +1151,7 @@ h1.hero em{color:var(--sand);font-style:italic}
 
     <!-- University suggestions -->
     <div class="uni-section fu d3">
-      <div class="sh" style="margin-bottom:16px">University Suggestions</div>
+      <div class="sh" style="margin-bottom:16px">Colleges &amp; Universities You Can Apply To</div>
       <div class="uni-grid" id="r-unis"></div>
     </div>
 
@@ -1055,7 +1160,7 @@ h1.hero em{color:var(--sand);font-style:italic}
       <button class="bo" onclick="goTo('dashboard')">← Dashboard</button>
     </div>
   </div>
-  <footer><span class="lsm">EduPath UAE</span><span>© 2026 EduPath UAE</span><span>Empowering students across the Emirates</span></footer>
+  <footer><span class="lsm">EduPath TPS</span><span>© 2026 EduPath TPS</span><span>Empowering Students of the Highest Rank</span></footer>
 </div>
 
 <script>
@@ -1072,6 +1177,22 @@ let CU=null, CP=null, pfpDataUrl=null, settingsPfpDataUrl=null;
 /* ══════════════════════════
    BOOT
 ══════════════════════════ */
+// Hard safety timeout — loader always disappears after 8s even if Supabase hangs
+setTimeout(() => {
+  const ls = document.getElementById('ls');
+  if (ls && !ls.classList.contains('gone')) ls.classList.add('gone');
+}, 8000);
+
+// Rotate loading messages
+const _loadMsgs = ['Preparing your experience…','Calibrating your profile…','Loading the platform…','Almost ready…'];
+let _loadIdx = 0;
+const _loadEl = document.getElementById('ll-status');
+const _loadTimer = setInterval(()=>{
+  _loadIdx = (_loadIdx+1) % _loadMsgs.length;
+  if(_loadEl) _loadEl.textContent = _loadMsgs[_loadIdx];
+}, 1800);
+setTimeout(()=>clearInterval(_loadTimer), 10000);
+
 (async()=>{
   // Check if arriving from a password-reset link
   const hash = window.location.hash;
@@ -1083,7 +1204,9 @@ let CU=null, CP=null, pfpDataUrl=null, settingsPfpDataUrl=null;
     return;
   }
   try {
-    const { data:{ session } } = await SB.auth.getSession();
+    const sessionPromise = SB.auth.getSession();
+    const timeoutPromise = new Promise((_,rej) => setTimeout(()=>rej(new Error('timeout')), 6000));
+    const { data:{ session } } = await Promise.race([sessionPromise, timeoutPromise]);
     if (session) {
       CU = session.user;
       await loadProfile();
@@ -1105,44 +1228,43 @@ SB.auth.onAuthStateChange(async(ev, session)=>{
    BUILD SUBJECT LIST
 ══════════════════════════ */
 const ALL_SUBJECTS = [
-  'Mathematics','Biology','Chemistry','Physics','Computer Science',
-  'Business Studies','Economics','English / Literature','History','Geography',
-  'Art & Design','Music','Physical Education (PE)','Health Education',
-  'Moral Social & Cultural Studies (MSCS)','Psychology','Sociology',
-  'Environmental Science','Design Technology','Media Studies',
-  'Arabic Language','Islamic Studies','French','German','Spanish'
+  'UAE Social Studies',
+  'Moral / Values Education',
+  'English for Academic and Professional / 21st Literature',
+  'Contemporary Arts / Work Immersion',
+  'General Physics 1 / 2',
+  'General Biology 1 / 2',
+  'Research in Daily Life / Understanding Culture, Society, and Politics',
+  'Robotics / STEM Robotics',
+  'Pagsulat sa Filipino sa Piling Larangan / Inquiry, Investigation, & Immersion',
+  'Media and Information Literacy / Entrepreneurship',
+  'Physical Education and Health',
+  'Physical Science'
 ];
-const GRADE_OPTIONS = ['A*','A','B','C','D','E/F','90–100%','80–89%','70–79%','60–69%','Below 60%','9','8','7','6','5','4','3','2','1','45–42 pts','41–38 pts','37–33 pts','32–28 pts','Below 28 pts'];
+const GRADE_OPTIONS = ['>75%','75%–80%','80%–85%','85%–90%','95%–100%'];
 
 function buildSubjectList() {
   const c = document.getElementById('subj-list');
   if (!c) return;
-  c.innerHTML = ALL_SUBJECTS.map(s => `
-    <div class="subj-row" id="sr-${s.replace(/[^a-z]/gi,'_')}">
-      <div class="subj-chk" onclick="toggleSubj(this,'${s.replace(/'/g,"\\'")}')">✓</div>
-      <span class="subj-name" onclick="toggleSubj(this.previousElementSibling,'${s.replace(/'/g,"\\'")}')"> ${s}</span>
-      <select class="subj-grade" disabled style="opacity:.35">
-        <option value="">Grade...</option>
+  c.innerHTML = ALL_SUBJECTS.map(s => {
+    const sid = s.replace(/[^a-z0-9]/gi,'_');
+    return `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,169,110,.08)">
+      <span style="flex:1;font-size:.88rem;color:var(--t1)">${s}</span>
+      <select data-subj="${s}" style="background:var(--inp);border:1px solid var(--br);border-radius:7px;color:var(--t1);padding:6px 10px;font-size:.82rem;min-width:130px;cursor:pointer" class="subj-grade">
+        <option value="">Select grade…</option>
         ${GRADE_OPTIONS.map(g=>`<option>${g}</option>`).join('')}
       </select>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
-function toggleSubj(chk, name) {
-  const row = chk.closest('.subj-row');
-  const sel = row.querySelector('.subj-grade');
-  const on = chk.classList.toggle('on');
-  sel.disabled = !on;
-  sel.style.opacity = on ? '1' : '.35';
-}
+function toggleSubj(chk, name) {}
 
 function getSubjectGrades() {
   const result = [];
-  document.querySelectorAll('.subj-chk.on').forEach(chk => {
-    const row = chk.closest('.subj-row');
-    const name = row.querySelector('.subj-name').textContent.trim();
-    const grade = row.querySelector('.subj-grade').value || 'Not specified';
-    result.push({ subject: name, grade });
+  document.querySelectorAll('.subj-grade').forEach(sel => {
+    if (sel.value) result.push({ subject: sel.dataset.subj, grade: sel.value });
   });
   return result;
 }
@@ -1151,10 +1273,22 @@ function getSubjectGrades() {
    NAV
 ══════════════════════════ */
 function goTo(id) {
-  // Logo click: if logged in go to dashboard, never log out
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
   window.scrollTo(0,0);
+  if (id === "profile-settings") populateProfileSettings();
+}
+
+function populateProfileSettings() {
+  if (!CP) return;
+  const pf=document.getElementById("ps-f"), pl=document.getElementById("ps-l");
+  const pg=document.getElementById("ps-g"), ps=document.getElementById("ps-s");
+  const err=document.getElementById("ps-err");
+  if(pf) pf.value=CP.first_name||"";
+  if(pl) pl.value=CP.last_name||"";
+  if(pg) pg.value=CP.grade||"";
+  if(ps) ps.value=CP.school||"";
+  if(err){err.textContent="";err.classList.remove("show");}
 }
 
 /* ══════════════════════════
@@ -1246,16 +1380,15 @@ async function doLogin() {
 ══════════════════════════ */
 async function doSignup() {
   const first=gv('su-f').trim(), last=gv('su-l').trim();
-  const email=gv('su-e').trim(), school=gv('su-s').trim();
+  const email=gv('su-e').trim(), section=gv('su-s').trim();
   const grade=gv('su-g'), pass=gv('su-p');
-  if(!first||!last||!email||!school||!grade||!pass){showE('se','Please fill in all fields.');return;}
+  if(!first||!last||!email||!grade||!section||!pass){showE('se','Please fill in all fields.');return;}
   if(pass.length<6){showE('se','Password must be at least 6 characters.');return;}
   setBtn('su-btn',true,'Creating account…');
   const {data,error}=await SB.auth.signUp({email,password:pass});
   if(error){setBtn('su-btn',false,'Create Free Account');showE('se',friendlyErr(error.message));return;}
   CU=data.user;
-  const profileData = { id:CU.id, first_name:first, last_name:last, school, grade };
-  if(pfpDataUrl) profileData.avatar_url = pfpDataUrl; // store as base64 for prototype
+  const profileData = { id:CU.id, first_name:first, last_name:last, school:section, grade };
   const {error:pe}=await SB.from('profiles').insert(profileData);
   if(pe) console.warn('Profile:',pe.message);
   await loadProfile();
@@ -1270,10 +1403,9 @@ async function doSignup() {
 async function saveProfile() {
   if(!CU) return;
   const first=gv('ps-f').trim(), last=gv('ps-l').trim();
-  const school=gv('ps-s').trim(), grade=gv('ps-g');
+  const section=gv('ps-s').trim(), grade=gv('ps-g');
   setBtn('ps-btn',true,'Saving…');
-  const upd = { first_name:first, last_name:last, school, grade, updated_at:new Date().toISOString() };
-  if(settingsPfpDataUrl) upd.avatar_url = settingsPfpDataUrl;
+  const upd = { first_name:first, last_name:last, school:section, grade, updated_at:new Date().toISOString() };
   const {error}=await SB.from('profiles').update(upd).eq('id',CU.id);
   setBtn('ps-btn',false,'Save Changes');
   if(error){showE('ps-err',friendlyErr(error.message));return;}
@@ -1365,8 +1497,8 @@ async function viewResult(id) {
 ══════════════════════════ */
 function nx(from) {
   if(from===1){
-    if(!gv('q-cur')){toast('Please select your curriculum','err');return;}
-    if(!gv('q-grading')){toast('Please select your grading system','err');return;}
+    if(!gr('grade_range')){toast('Please select your recent highest grade','err');return;}
+    if(!gr('career_plan') && !gv('q-career-other')){toast('Please select your intended career path','err');return;}
     if(!gr('spectype')){toast('Please answer the specialist vs all-rounder question','err');return;}
   }
   if(from===2){
@@ -1397,20 +1529,35 @@ function setStep(n) {
 /* ══════════════════════════
    SUBMIT
 ══════════════════════════ */
+function showAnalysisLoader() {
+  const ls = document.getElementById('ls');
+  ls.classList.remove('gone');
+  const el = document.getElementById('ll-status');
+  const msgs = ['Analysing your academic profile…','Matching your career interests…','Finding the best universities…','Almost there…'];
+  let i = 0;
+  const t = setInterval(() => { i=(i+1)%msgs.length; if(el) el.textContent=msgs[i]; }, 1800);
+  ls._analysisTimer = t;
+}
 async function submitA() {
   const interests=gm('ci');
   if(interests.length===0){toast('Please select at least one career field','err');return;}
-  if(!gr('sloc')){toast('Please select where you plan to study','err');return;}
+  const slocArr=gm('sloc');
+  if(slocArr.length===0){toast('Please select where you plan to study','err');return;}
   setBtn('sub-btn',true,'Analysing your profile…');
 
   const subjectGrades = getSubjectGrades();
   const subjects = subjectGrades.map(s=>s.subject);
-  const extras=gm('extra'), lead=gr('lead'), curriculum=gv('q-cur'), grading=gv('q-grading');
-  const solve=gr('solve'), env=gr('env'), motiv=gr('motiv'), sloc=gr('sloc');
+  const careerPlanVal = gr('career_plan');
+  const careerOther = document.getElementById('q-career-other')?.value?.trim();
+  const careerPlanFinal = careerPlanVal === 'Others' ? (careerOther || 'Others') : (careerPlanVal || '');
+  document.getElementById('q-grading').value = careerPlanFinal;
+  const extras=gm('extra'), lead=gr('lead'), grading=careerPlanFinal;
+  const gradeRange=gr('grade_range');
+  const solve=gr('solve'), env=gr('env'), motiv=gr('motiv');
 
   const allAnswers = {
-    subjects, extras, lead, curriculum, grading, subjectGrades,
-    solve, env, motiv, interests, sloc,
+    subjects, extras, lead, curriculum: gradeRange, grading, subjectGrades,
+    solve, env, motiv, interests, sloc: slocArr[0], slocAll: slocArr,
     spectype:gr('spectype'), endure:gr('endure'), assespref:gr('assespref'),
     infoproc:gr('infoproc'), flow:gr('flow'), classenv:gr('classenv'),
     subjskill:gr('subjskill'), edugoal:gr('edugoal'),
@@ -1421,17 +1568,18 @@ async function submitA() {
     geobase:gr('geobase'), culture:gr('culture'), globalorg:gr('globalorg'),
     studyint:gr('studyint'), intlwork:gr('intlwork'), globalchallenge:gr('globalchallenge'),
     independence:gr('independence'), residency:gr('residency'),
+    patientcare:gr('patientcare'), empathy:gr('empathy'), nursingspec:gr('nursingspec'),
   };
 
   const { top, score, all } = scoreAll(allAnswers);
 
   const payload = {
-    user_id: CU.id, curriculum, subjects, gpa_range: grading,
+    user_id: CU.id, curriculum: gradeRange, subjects, gpa_range: grading,
     has_internship: allAnswers.workexp.join(', '),
     extracurriculars: extras, leadership_role: lead,
     problem_solving_style: solve, thrive_environment: env,
     primary_motivator: motiv, career_interests: interests,
-    study_location: sloc, top_match_career: top, top_match_score: score
+    study_location: slocArr[0]||'', top_match_career: top, top_match_score: score
   };
 
   const {data,error}=await SB.from('assessments').insert(payload).select().single();
@@ -1439,6 +1587,8 @@ async function submitA() {
   if(error){console.error(error);toast('Error saving: '+error.message,'err');return;}
   renderResults({...data, allMatches: all, rawAnswers: allAnswers});
   toast('Assessment complete! ✨','ok');
+  document.getElementById('ls').classList.add('gone');
+  if(document.getElementById('ls')._analysisTimer) clearInterval(document.getElementById('ls')._analysisTimer);
   goTo('results'); resetForm(); loadDash();
 }
 
@@ -1481,7 +1631,8 @@ const CAREERS = [
 function scoreAll(a) {
   const {subjects,extras,lead,solve,env,motiv,interests,
     spectype,infoproc,flow,edugoal,persona,output,motive2,
-    social,decision,risk,curiosity,globalchallenge,workexp=[]} = a;
+    social,decision,risk,curiosity,globalchallenge,workexp=[],
+    patientcare,empathy,nursingspec} = a;
 
   const pool = [
     ...subjects, ...extras, ...interests, ...(workexp||[]),
@@ -1492,6 +1643,16 @@ function scoreAll(a) {
     motiv==='Financial success'?'Finance':null,
     infoproc, flow, edugoal, persona, output, motive2,
     social, decision, risk, curiosity, globalchallenge,
+    // Nursing signals
+    (patientcare==='Very comfortable'||patientcare==='Somewhat comfortable')?'Hands-On':null,
+    (patientcare==='Very comfortable')?'Helping others':null,
+    (empathy==='Calm and action-oriented'||empathy==='Deeply empathetic')?'Empath':null,
+    (empathy==='Deeply empathetic')?'Positive societal impact':null,
+    (nursingspec&&nursingspec!=='None')?'Medicine & Healthcare':null,
+    (nursingspec&&nursingspec!=='None')?'Helping others':null,
+    (nursingspec==='Emergency / ICU')?'Fast-paced and dynamic':null,
+    (nursingspec==='Community / Public Health')?'Positive societal impact':null,
+    (nursingspec==='Mental Health')?'Human Psychology':null,
   ].filter(Boolean);
 
   const scores = CAREERS.map(c=>{
@@ -1555,8 +1716,76 @@ function renderResults(data, _unused) {
   document.getElementById('r-ins').innerHTML = mkInsight(data, tags);
   document.getElementById('r-adv').innerHTML = mkAdvice(data, topM.name, top5);
 
-  // University suggestions
-  renderUnis(data, topM.name);
+  // Job opportunities from top 3 careers
+  renderJobs(matches.slice(0,3));
+
+  // University suggestions — pass slocAll for location-aware schools
+  const slocAll = data.rawAnswers?.slocAll || (data.study_location ? [data.study_location] : ['UAE']);
+  renderUnis({...data, rawAnswers:{...(data.rawAnswers||{}), slocAll}}, topM.name);
+}
+
+/* ══════════════════════════
+   JOB OPPORTUNITIES DATABASE
+══════════════════════════ */
+const JOB_DB = {
+  'Biomedical Engineering':           { icon:'🔬', jobs:[ { title:'Biomedical Engineer', desc:'Design and develop medical devices, prosthetics, and diagnostic equipment used in hospitals and clinics.' }, { title:'Clinical Research Scientist', desc:'Lead trials and experiments to test new medical technologies, drugs, and treatment protocols.' }, { title:'Medical Device Sales Specialist', desc:'Represent cutting-edge healthcare products to hospitals, surgeons, and procurement teams.' } ] },
+  'Medicine & Surgery':               { icon:'🩺', jobs:[ { title:'General Practitioner (GP)', desc:'Diagnose and treat a wide range of illnesses, managing long-term patient health in clinics or hospitals.' }, { title:'Surgeon', desc:'Perform complex surgical procedures to treat injuries, diseases, and deformities across specialisations.' }, { title:'Medical Researcher', desc:'Investigate the causes and treatments of diseases to advance global healthcare knowledge and outcomes.' } ] },
+  'Computer Science & AI':            { icon:'🤖', jobs:[ { title:'Machine Learning Engineer', desc:'Build AI models and algorithms that power intelligent systems from recommendation engines to autonomous vehicles.' }, { title:'Software Developer', desc:'Design, code, test, and maintain applications and platforms used by millions of people daily.' }, { title:'AI Product Manager', desc:'Lead teams building AI-powered products, bridging technical development and real-world user needs.' } ] },
+  'Mechanical Engineering':           { icon:'⚙️', jobs:[ { title:'Mechanical Design Engineer', desc:'Create and optimise physical systems — from engines to robotics — using CAD and simulation tools.' }, { title:'Manufacturing Engineer', desc:'Streamline production processes in factories to improve quality, safety, and output efficiency.' }, { title:'Robotics Engineer', desc:'Develop automated machines and robotic systems for industries like automotive, aerospace, and logistics.' } ] },
+  'Data Science & Analytics':         { icon:'📊', jobs:[ { title:'Data Scientist', desc:'Extract actionable insights from large datasets using statistical models and machine learning techniques.' }, { title:'Business Intelligence Analyst', desc:'Turn company data into clear dashboards and reports that guide strategic decision-making.' }, { title:'Quantitative Analyst (Quant)', desc:'Apply mathematical models to financial markets, risk assessment, and investment strategies.' } ] },
+  'Architecture & Urban Design':      { icon:'🏛️', jobs:[ { title:'Architect', desc:'Conceptualise and design buildings, balancing aesthetics, functionality, sustainability, and structural integrity.' }, { title:'Urban Planner', desc:'Shape cities by designing land use, transport systems, and public spaces for growing communities.' }, { title:'Interior Designer', desc:'Transform interior spaces — residential, commercial, or hospitality — through creative spatial design.' } ] },
+  'Business & Entrepreneurship':      { icon:'🚀', jobs:[ { title:'Entrepreneur / Startup Founder', desc:'Build and scale your own company, identifying market gaps and turning ideas into profitable ventures.' }, { title:'Management Consultant', desc:'Advise organisations on strategy, operations, and performance improvement across industries.' }, { title:'Business Development Manager', desc:'Identify new markets, forge partnerships, and drive revenue growth for established companies.' } ] },
+  'Law & Political Science':          { icon:'⚖️', jobs:[ { title:'Corporate Lawyer', desc:'Advise businesses on contracts, mergers, compliance, and legal disputes in commercial environments.' }, { title:'Human Rights Advocate', desc:'Work with NGOs or international bodies to protect civil liberties and challenge unjust policies.' }, { title:'Policy Analyst', desc:'Research and evaluate government policies, advising lawmakers on legislation and its real-world impact.' } ] },
+  'Finance & Investment Banking':     { icon:'💹', jobs:[ { title:'Investment Banker', desc:'Structure deals, raise capital, and advise corporations on mergers, acquisitions, and IPOs.' }, { title:'Financial Analyst', desc:'Evaluate investment opportunities, model financial performance, and guide portfolio decisions.' }, { title:'Risk Manager', desc:'Identify, assess, and mitigate financial risks for banks, funds, and large corporations.' } ] },
+  'Media, Film & Communications':     { icon:'🎬', jobs:[ { title:'Content Strategist', desc:'Plan and oversee the creation of digital content that builds brand identity and engages audiences.' }, { title:'Film Director / Producer', desc:'Lead the creative and logistical process of bringing stories to life on screen.' }, { title:'Public Relations Manager', desc:'Shape how organisations communicate with the public, media, and stakeholders to protect and grow reputation.' } ] },
+  'Psychology & Counselling':         { icon:'🧠', jobs:[ { title:'Clinical Psychologist', desc:'Assess and treat mental health conditions through therapy and evidence-based psychological interventions.' }, { title:'Counsellor / Therapist', desc:'Provide emotional support and guidance to individuals navigating personal, relationship, or career challenges.' }, { title:'Organisational Psychologist', desc:'Apply psychology in workplace settings to improve productivity, wellbeing, and team dynamics.' } ] },
+  'International Relations & Diplomacy':{ icon:'🌍', jobs:[ { title:'Diplomat / Foreign Service Officer', desc:'Represent your country abroad, negotiating treaties and managing bilateral and multilateral relationships.' }, { title:'International Development Specialist', desc:'Work with the UN, World Bank, or NGOs to design programmes addressing poverty, health, and education globally.' }, { title:'Political Risk Analyst', desc:'Assess how geopolitical events affect business operations, advising multinational corporations and governments.' } ] },
+  'Environmental Science & Sustainability':{ icon:'🌱', jobs:[ { title:'Environmental Consultant', desc:'Advise businesses and governments on reducing their ecological footprint and meeting sustainability regulations.' }, { title:'Renewable Energy Engineer', desc:'Design and implement solar, wind, and other clean energy systems for communities and industries.' }, { title:'Conservation Scientist', desc:'Study and protect natural ecosystems, biodiversity, and wildlife through fieldwork and policy advocacy.' } ] },
+  'Software Engineering':             { icon:'💻', jobs:[ { title:'Full-Stack Developer', desc:'Build complete web applications — front-end interfaces and back-end systems — for companies of all sizes.' }, { title:'DevOps Engineer', desc:'Bridge development and operations, automating deployment pipelines and managing cloud infrastructure.' }, { title:'Cybersecurity Engineer', desc:'Protect software systems from threats by designing secure architecture and responding to breaches.' } ] },
+  'Nursing & Allied Health':          { icon:'🏥', jobs:[ { title:'Registered Nurse (RN)', desc:'Provide direct patient care, administer treatments, and collaborate with physicians across hospital departments.' }, { title:'Nurse Practitioner', desc:'Diagnose conditions and prescribe treatments independently, often serving as a primary care provider.' }, { title:'Healthcare Administrator', desc:'Manage hospital departments, coordinate staff, and ensure delivery of high-quality patient services.' } ] },
+  'Marketing & Advertising':          { icon:'📣', jobs:[ { title:'Digital Marketing Manager', desc:'Plan and execute online campaigns across social media, SEO, and paid ads to drive brand growth.' }, { title:'Brand Strategist', desc:'Define how a company positions itself in the market, crafting the identity and messaging that resonates with audiences.' }, { title:'Creative Director', desc:'Lead the visual and conceptual direction of advertising campaigns, ensuring creative work meets strategic goals.' } ] },
+  'Dentistry & Oral Health':          { icon:'🦷', jobs:[ { title:'General Dentist', desc:'Diagnose and treat oral health conditions including cavities, gum disease, and tooth restoration.' }, { title:'Orthodontist', desc:'Specialise in correcting teeth and jaw alignment using braces, aligners, and retainers.' }, { title:'Oral Surgeon', desc:'Perform complex surgical procedures such as wisdom tooth removal, jaw reconstruction, and implants.' } ] },
+  'Pharmacy & Pharmaceutical Science':{ icon:'💊', jobs:[ { title:'Clinical Pharmacist', desc:'Work alongside medical teams to review patient medications, prevent drug interactions, and optimise treatment.' }, { title:'Pharmaceutical Researcher', desc:'Develop and test new drugs in laboratory settings, advancing treatments for diseases worldwide.' }, { title:'Regulatory Affairs Specialist', desc:'Ensure pharmaceutical products meet government safety standards before they reach the market.' } ] },
+  'Aerospace & Aeronautical Engineering':{ icon:'🛸', jobs:[ { title:'Aerospace Engineer', desc:'Design aircraft, spacecraft, and propulsion systems, pushing the boundaries of flight and space exploration.' }, { title:'Avionics Engineer', desc:'Develop the electronic systems that control navigation, communication, and instrumentation in aircraft.' }, { title:'Flight Test Engineer', desc:'Evaluate aircraft performance and safety during test flights, certifying new designs for commercial or military use.' } ] },
+  'Civil & Structural Engineering':   { icon:'🏗️', jobs:[ { title:'Structural Engineer', desc:'Ensure buildings and infrastructure are safe, stable, and capable of withstanding loads and environmental forces.' }, { title:'Transport Engineer', desc:'Design road networks, bridges, tunnels, and public transit systems for growing cities.' }, { title:'Construction Project Manager', desc:'Oversee construction projects from planning to delivery, managing budgets, timelines, and site teams.' } ] },
+  'Education & Teaching':             { icon:'📚', jobs:[ { title:'Secondary School Teacher', desc:'Educate and inspire students in your specialist subject, shaping the next generation of thinkers.' }, { title:'Curriculum Developer', desc:'Design educational programmes and learning materials that meet academic standards and student needs.' }, { title:'Educational Psychologist', desc:'Support students with learning difficulties, behavioural challenges, and special educational needs.' } ] },
+  'Graphic Design & Visual Arts':     { icon:'🎨', jobs:[ { title:'Graphic Designer', desc:'Create visual identities, marketing materials, and digital content that communicate brand messages powerfully.' }, { title:'UX/UI Designer', desc:'Design intuitive, beautiful digital interfaces that make apps and websites enjoyable to use.' }, { title:'Motion Graphics Artist', desc:'Produce animated visual content for advertising, social media, films, and broadcast media.' } ] },
+  'Biotechnology & Genetics':         { icon:'🧬', jobs:[ { title:'Geneticist', desc:'Study genes and heredity to understand diseases, develop therapies, and advance personalised medicine.' }, { title:'Biotech Research Scientist', desc:'Engineer biological systems to create new medicines, agricultural products, and industrial solutions.' }, { title:'Bioinformatics Analyst', desc:'Use computational tools to interpret genetic and molecular data, supporting drug discovery and genomics research.' } ] },
+  'Cybersecurity':                    { icon:'🔒', jobs:[ { title:'Penetration Tester (Ethical Hacker)', desc:'Simulate cyberattacks to find system vulnerabilities before malicious hackers can exploit them.' }, { title:'SOC Analyst', desc:'Monitor networks in real time, detect threats, and respond to security incidents around the clock.' }, { title:'Chief Information Security Officer (CISO)', desc:'Lead an organisation\'s entire cybersecurity strategy, policies, and incident response at the executive level.' } ] },
+  'Sports Science & Physiotherapy':   { icon:'🏃', jobs:[ { title:'Physiotherapist', desc:'Rehabilitate patients recovering from injuries, surgeries, or chronic conditions through targeted physical therapy.' }, { title:'Sports Scientist', desc:'Analyse athlete performance data and design training programmes to maximise physical output and prevent injury.' }, { title:'Strength & Conditioning Coach', desc:'Develop personalised fitness programmes for elite athletes to build strength, endurance, and resilience.' } ] },
+  'Accounting & Auditing':            { icon:'📋', jobs:[ { title:'Chartered Accountant (CA)', desc:'Provide financial reporting, tax planning, and audit services to individuals and corporations.' }, { title:'External Auditor', desc:'Independently examine company financial statements to ensure accuracy, compliance, and transparency.' }, { title:'Forensic Accountant', desc:'Investigate financial fraud, embezzlement, and disputes, often providing expert testimony in legal cases.' } ] },
+  'Urban Planning & Real Estate':     { icon:'🏙️', jobs:[ { title:'Real Estate Developer', desc:'Identify, finance, and oversee the construction of residential, commercial, or mixed-use property projects.' }, { title:'Urban Planner', desc:'Work with governments to design zoning policies, infrastructure, and community development strategies.' }, { title:'Property Valuer', desc:'Assess the market value of land and buildings for sales, mortgage lending, and investment purposes.' } ] },
+  'Journalism & Creative Writing':    { icon:'✍️', jobs:[ { title:'Investigative Journalist', desc:'Uncover stories of public interest through deep research, interviews, and fearless reporting.' }, { title:'Content Writer / Copywriter', desc:'Craft compelling written content for brands, publishers, and digital media across platforms.' }, { title:'Screenwriter', desc:'Develop scripts for films, television, and digital series, translating ideas into powerful visual storytelling.' } ] },
+  'Marine Biology & Oceanography':    { icon:'🌊', jobs:[ { title:'Marine Biologist', desc:'Study ocean ecosystems, marine organisms, and the impact of human activity on underwater environments.' }, { title:'Oceanographer', desc:'Investigate ocean chemistry, physics, and geology to understand climate patterns and underwater geography.' }, { title:'Aquatic Conservation Officer', desc:'Develop and enforce policies to protect marine habitats, fisheries, and endangered aquatic species.' } ] },
+  'Nutrition & Dietetics':            { icon:'🥗', jobs:[ { title:'Clinical Dietitian', desc:'Develop nutrition plans for patients managing chronic conditions like diabetes, heart disease, and obesity.' }, { title:'Sports Nutritionist', desc:'Advise athletes on diet strategies to enhance performance, recovery, and long-term health.' }, { title:'Public Health Nutritionist', desc:'Design community programmes and government initiatives to improve population-level dietary habits.' } ] },
+};
+
+function renderJobs(top3) {
+  const el = document.getElementById('r-jobs');
+  if (!el) return;
+  el.innerHTML = top3.map((career, idx) => {
+    const db = JOB_DB[career.name];
+    if (!db) return '';
+    const rankLabel = idx === 0 ? '#1 Match' : idx === 1 ? '#2 Match' : '#3 Match';
+    const rankColor = idx === 0 ? 'var(--sand)' : idx === 1 ? '#a4b8a0' : '#c97a5a';
+    return `
+    <div class="card" style="padding:22px 24px;margin-bottom:16px;border-left:3px solid ${rankColor}">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+        <span style="font-size:1.6rem">${db.icon}</span>
+        <div>
+          <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:${rankColor};margin-bottom:2px">${rankLabel} &middot; ${career.score}% match</div>
+          <div style="font-family:'EB Garamond',serif;font-size:1.15rem;color:var(--t1)">${career.name}</div>
+        </div>
+      </div>
+      <div class="job-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        ${db.jobs.map(job => `
+          <div style="background:rgba(12,26,13,.6);border:1px solid var(--br);border-radius:9px;padding:14px 16px">
+            <div style="font-size:.82rem;font-weight:600;color:var(--sand);margin-bottom:6px">${job.title}</div>
+            <div style="font-size:.78rem;color:var(--t2);line-height:1.6">${job.desc}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 /* ══════════════════════════
@@ -1670,33 +1899,80 @@ ${geoStr ? geoStr + '<br><br>' : ''}Your academic choices, extracurricular patte
    UNIVERSITY SUGGESTIONS
 ══════════════════════════ */
 const UNI_DB = {
-  'Biomedical Engineering':      { reach:['Johns Hopkins University','Imperial College London','ETH Zurich'], target:['Khalifa University','University of Birmingham','University of Toronto'], safety:['American University of Sharjah','Heriot-Watt University Dubai','University of Wollongong in Dubai'] },
-  'Medicine & Surgery':          { reach:['University of Oxford','Harvard Medical School','University of Melbourne'], target:['UAE University (CMHS)','University of Glasgow','University of Sharjah'], safety:['Gulf Medical University','RAK Medical & Health Sciences University','University of Nicosia'] },
-  'Computer Science & AI':       { reach:['MIT','Stanford University','ETH Zurich'], target:['NYU Abu Dhabi','University of Edinburgh','University of Waterloo'], safety:['American University in Dubai','Middlesex University Dubai','Abu Dhabi University'] },
-  'Mechanical Engineering':      { reach:['MIT','TU Munich','Imperial College London'], target:['Khalifa University','University of Southampton','RMIT University'], safety:['Higher Colleges of Technology','Manipal University Dubai','Murdoch University Dubai'] },
-  'Data Science & Analytics':    { reach:['Carnegie Mellon University','UC Berkeley','University of Cambridge'], target:['MBZUAI Abu Dhabi','University of Edinburgh','University of Melbourne'], safety:['Amity University Dubai','Curtin University Dubai','University of Wollongong in Dubai'] },
-  'Architecture & Urban Design': { reach:['Architectural Association London','Columbia University GSAPP','Delft University of Technology'], target:['American University of Sharjah','University of Sydney','Cardiff University'], safety:['Caledonian College of Engineering','BITS Pilani Dubai','Manipal University Dubai'] },
-  'Business & Entrepreneurship': { reach:['Wharton School (UPenn)','INSEAD','London Business School'], target:['American University of Sharjah','University of Melbourne Business School','IE Business School'], safety:['University of Dubai','Amity University Dubai','Skyline University College'] },
-  'Law & Political Science':     { reach:['University of Oxford','University of Cambridge','LSE'], target:['UAE University Faculty of Law','University of Exeter','University of Glasgow'], safety:['University of Dubai School of Law','British University in Dubai','City University Ajman'] },
-  'Finance & Investment Banking': { reach:['London School of Economics','New York University Stern','University of Hong Kong'], target:['American University of Sharjah','University of Leeds','Monash University'], safety:['Middlesex University Dubai','University of Wollongong in Dubai','Abu Dhabi University'] },
-  'DEFAULT':                     { reach:['University of Oxford','MIT','ETH Zurich'], target:['NYU Abu Dhabi','Khalifa University','University of Melbourne'], safety:['American University of Sharjah','Manipal University Dubai','Amity University Dubai'] },
+  'UAE': {
+    'Biomedical Engineering':      { reach:['Khalifa University','Mohammed Bin Rashid University of Medicine'], target:['University of Sharjah','American University of Sharjah'], safety:['Higher Colleges of Technology','Abu Dhabi University'] },
+    'Medicine & Surgery':          { reach:['UAE University (CMHS)','University of Sharjah (Medicine)'], target:['Gulf Medical University','RAK Medical & Health Sciences University'], safety:['University of Nicosia (Dubai Campus)','City University College Ajman'] },
+    'Nursing & Allied Health':     { reach:['UAE University (Nursing)','University of Sharjah (Health Sciences)'], target:['Gulf Medical University','RAK Medical & Health Sciences University'], safety:['Higher Colleges of Technology','Abu Dhabi University'] },
+    'Computer Science & AI':       { reach:['NYU Abu Dhabi','Khalifa University'], target:['American University of Sharjah','American University in Dubai'], safety:['Middlesex University Dubai','Abu Dhabi University'] },
+    'Business & Entrepreneurship': { reach:['INSEAD (Abu Dhabi)','American University of Sharjah'], target:['University of Dubai','Heriot-Watt University Dubai'], safety:['Skyline University College','Amity University Dubai'] },
+    'DEFAULT':                     { reach:['NYU Abu Dhabi','Khalifa University'], target:['American University of Sharjah','University of Sharjah'], safety:['Amity University Dubai','Abu Dhabi University'] },
+  },
+  'UK / Europe': {
+    'Biomedical Engineering':      { reach:['Imperial College London','ETH Zurich','University of Cambridge'], target:['University of Birmingham','University of Leeds','KU Leuven'], safety:['University of Hertfordshire','Edinburgh Napier University','Maastricht University'] },
+    'Medicine & Surgery':          { reach:['University of Oxford','University of Cambridge','University of Edinburgh'], target:['University of Glasgow','University of Manchester','University of Amsterdam'], safety:['University of Buckingham','Charles University Prague','University of Nicosia'] },
+    'Nursing & Allied Health':     { reach:['King\'s College London','University of Edinburgh','University of Amsterdam'], target:['University of Manchester','University of Glasgow','Maastricht University'], safety:['University of Hertfordshire','Edinburgh Napier University','Canterbury Christ Church University'] },
+    'Computer Science & AI':       { reach:['University of Cambridge','ETH Zurich','University of Oxford'], target:['University of Edinburgh','University of Manchester','TU Delft'], safety:['University of Hertfordshire','Northumbria University','University of Groningen'] },
+    'Business & Entrepreneurship': { reach:['London Business School','INSEAD','IE Business School'], target:['University of Warwick','University of Manchester','Bocconi University'], safety:['University of Hertfordshire','Oxford Brookes University','University of Groningen'] },
+    'DEFAULT':                     { reach:['University of Oxford','Imperial College London','ETH Zurich'], target:['University of Edinburgh','University of Manchester','University of Amsterdam'], safety:['University of Hertfordshire','Edinburgh Napier University','Maastricht University'] },
+  },
+  'USA / Canada': {
+    'Biomedical Engineering':      { reach:['Johns Hopkins University','MIT','Stanford University'], target:['University of Toronto','University of Michigan','Georgia Tech'], safety:['University of Alberta','Drexel University','Ryerson University'] },
+    'Medicine & Surgery':          { reach:['Harvard Medical School','Johns Hopkins','University of Toronto (Medicine)'], target:['McGill University','University of British Columbia','Case Western Reserve'], safety:['Ross University','American University of the Caribbean','St. George\'s University'] },
+    'Nursing & Allied Health':     { reach:['Johns Hopkins University','University of Pennsylvania','University of Toronto'], target:['McGill University','University of British Columbia','Ohio State University'], safety:['University of Alberta','Ryerson University','Dalhousie University'] },
+    'Computer Science & AI':       { reach:['MIT','Stanford University','Carnegie Mellon University'], target:['University of Waterloo','University of Toronto','University of British Columbia'], safety:['University of Alberta','Ryerson University','University of Ottawa'] },
+    'Business & Entrepreneurship': { reach:['Wharton School (UPenn)','Harvard Business School','Ivey Business School'], target:['University of Toronto (Rotman)','McGill University (Desautels)','NYU Stern'], safety:['University of Ottawa (Telfer)','York University (Schulich)','Concordia University'] },
+    'DEFAULT':                     { reach:['MIT','Stanford University','Harvard University'], target:['University of Toronto','McGill University','University of British Columbia'], safety:['University of Alberta','University of Ottawa','Ryerson University'] },
+  },
+  'Philippines': {
+    'Biomedical Engineering':      { reach:['University of the Philippines Diliman','De La Salle University'], target:['Ateneo de Manila University','University of Santo Tomas'], safety:['Mapua University','Adamson University'] },
+    'Medicine & Surgery':          { reach:['University of the Philippines College of Medicine','University of Santo Tomas (Medicine)'], target:['Ateneo School of Medicine & Public Health','De La Salle Medical & Health Sciences Institute'], safety:['Far Eastern University-NRMF','Centro Escolar University'] },
+    'Nursing & Allied Health':     { reach:['University of the Philippines Manila (Nursing)','University of Santo Tomas (Nursing)'], target:['Ateneo de Manila University','De La Salle University (Health Sciences)'], safety:['Far Eastern University','Centro Escolar University','Philippine Women\'s University'] },
+    'Computer Science & AI':       { reach:['University of the Philippines Diliman','Ateneo de Manila University'], target:['De La Salle University','Mapua University'], safety:['Adamson University','Polytechnic University of the Philippines'] },
+    'Business & Entrepreneurship': { reach:['Ateneo de Manila University (JGSOM)','De La Salle University (CBA)'], target:['University of Santo Tomas','University of the Philippines'], safety:['Far Eastern University','San Beda University'] },
+    'DEFAULT':                     { reach:['University of the Philippines','Ateneo de Manila University'], target:['De La Salle University','University of Santo Tomas'], safety:['Mapua University','Far Eastern University'] },
+  },
 };
 
+function getUniDb(career, slocAll) {
+  // Priority order for locations
+  const priority = ['Philippines','USA / Canada','UK / Europe','UAE','Undecided'];
+  const chosen = (slocAll||[]).filter(s=>s!=='Undecided');
+  const locs = chosen.length ? chosen : ['UAE'];
+
+  return locs.map(loc => {
+    const locDb = UNI_DB[loc] || UNI_DB['UAE'];
+    const db = locDb[career] || locDb['DEFAULT'];
+    return { loc, db };
+  });
+}
+
 function renderUnis(data, topCareer) {
-  const db = UNI_DB[topCareer] || UNI_DB['DEFAULT'];
-  document.getElementById('r-unis').innerHTML = `
-    <div class="uni-col">
-      <div class="uni-col-label reach">🎯 Reach Schools</div>
-      ${db.reach.map(u=>`<div class="uni-item">${u}<span>Highly competitive entry</span></div>`).join('')}
-    </div>
-    <div class="uni-col">
-      <div class="uni-col-label target">✅ Target Schools</div>
-      ${db.target.map(u=>`<div class="uni-item">${u}<span>Well-matched to your profile</span></div>`).join('')}
-    </div>
-    <div class="uni-col">
-      <div class="uni-col-label safety">🛡 Safety Schools</div>
-      ${db.safety.map(u=>`<div class="uni-item">${u}<span>Strong acceptance likelihood</span></div>`).join('')}
+  const slocAll = (data.rawAnswers?.slocAll || (data.study_location ? [data.study_location] : ['UAE'])).filter(s => s !== 'Undecided');
+  const locs = slocAll.length ? slocAll : ['UAE'];
+  const uniSets = getUniDb(topCareer, locs);
+
+  // Total target: 3 unis if 1 location, 6 total if 2-3 locations
+  const total = locs.length === 1 ? 3 : 6;
+  const perLoc = Math.ceil(total / locs.length);
+
+  document.getElementById('r-unis').innerHTML = uniSets.map(({loc, db}) => {
+    // Flatten all unis from reach/target/safety, take top `perLoc`
+    const allUnis = [...db.reach, ...db.target, ...db.safety];
+    const shown = allUnis.slice(0, perLoc);
+    return `
+    <div style="margin-bottom:20px">
+      <div style="font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <span>📍</span><span>In ${loc}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${shown.map((u,i) => `
+          <div class="card" style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:.88rem;color:var(--t1)">${u}</span>
+            <span style="font-size:.73rem;color:var(--t3);background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);padding:2px 10px;border-radius:20px;white-space:nowrap;margin-left:12px">${i < db.reach.length ? '🎯 Reach' : i < db.reach.length + db.target.length ? '✅ Target' : '🛡 Safety'}</span>
+          </div>`).join('')}
+      </div>
     </div>`;
+  }).join('');
 }
 
 /* ══════════════════════════
@@ -1704,90 +1980,467 @@ function renderUnis(data, topCareer) {
 ══════════════════════════ */
 async function downloadPDF() {
   const btn = document.getElementById('pdf-btn');
-  btn.textContent = '⏳ Generating…'; btn.disabled=true;
+  btn.textContent = '⏳ Generating…'; btn.disabled = true;
   try {
     const {jsPDF} = window.jspdf;
-    const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const W=210, M=18, y={v:20};
-    const line=()=>{doc.setDrawColor(46,100,55);doc.setLineWidth(0.3);doc.line(M,y.v,W-M,y.v);y.v+=6;};
-    const h=(txt,sz=14,clr=[20,60,28])=>{doc.setFontSize(sz);doc.setTextColor(...clr);doc.text(txt,M,y.v);y.v+=sz*0.5+3;};
-    const t=(txt,sz=10,clr=[40,85,48])=>{doc.setFontSize(sz);doc.setTextColor(...clr);const lines=doc.splitTextToSize(txt,W-M*2);doc.text(lines,M,y.v);y.v+=lines.length*(sz*0.4+1.5)+2;};
-    const chk=()=>{if(y.v>270){doc.addPage();y.v=20;}};
+    const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    const W = 210, M = 18;
+    const y = {v: 20};
 
-    // Header bar
-    doc.setFillColor(22,43,24);doc.rect(0,0,W,28,'F');
-    doc.setFontSize(22);doc.setTextColor(201,169,110);doc.text('EduPath UAE',M,16);
-    doc.setFontSize(9);doc.setTextColor(200,220,200);
-    const name=CP?((CP.first_name||'')+' '+(CP.last_name||'')).trim():'Student';
-    const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-    doc.text(`${name}  ·  ${date}`,M,23);
-    y.v=36;
+    // ── Helpers ──────────────────────────────────────────────
+    const newPage = () => { doc.addPage(); y.v = 20; };
+    const chk = (needed = 14) => { if (y.v + needed > 278) newPage(); };
 
-    h('Career Assessment Report',18);
-    line();
+    const hdr = (txt, sz = 13, clr = [20, 60, 28]) => {
+      chk(sz * 0.6 + 6);
+      doc.setFontSize(sz); doc.setTextColor(...clr);
+      doc.text(txt, M, y.v);
+      y.v += sz * 0.52 + 3;
+    };
 
-    // Top match
-    const tpEl=document.getElementById('r-tp');
-    const tcEl=document.getElementById('r-tc');
-    if(tpEl&&tcEl){
-      h('Your Definitive Career Match',13,[180,130,60]);
-      doc.setFontSize(28);doc.setTextColor(180,130,60);doc.text(tpEl.textContent,M,y.v);
-      doc.setFontSize(14);doc.setTextColor(20,60,28);doc.text(tcEl.textContent,M+30,y.v);
-      y.v+=12;line();
+    const body = (txt, sz = 9.5, clr = [40, 85, 48]) => {
+      if (!txt || !txt.trim()) return;
+      const clean = txt.replace(/\n{3,}/g, '\n\n').trim();
+      const wrapped = doc.splitTextToSize(clean, W - M * 2);
+      chk(wrapped.length * (sz * 0.42 + 1.2) + 2);
+      doc.setFontSize(sz); doc.setTextColor(...clr);
+      doc.text(wrapped, M, y.v);
+      y.v += wrapped.length * (sz * 0.42 + 1.2) + 2;
+    };
+
+    const rule = (clr = [46, 100, 55]) => {
+      chk(8);
+      doc.setDrawColor(...clr); doc.setLineWidth(0.25);
+      doc.line(M, y.v, W - M, y.v);
+      y.v += 5;
+    };
+
+    const label = (txt, clr = [180, 130, 60]) => {
+      chk(6);
+      doc.setFontSize(7.5); doc.setTextColor(...clr);
+      doc.setFont(undefined, 'normal');
+      const upper = txt.toUpperCase();
+      doc.text(upper, M, y.v); y.v += 4.5;
+    };
+
+    const bar = (pct, x, barY, bW = W - M * 2, bH = 3) => {
+      doc.setFillColor(30, 55, 32);
+      doc.roundedRect(x, barY, bW, bH, 1, 1, 'F');
+      const filled = Math.max(2, (pct / 100) * bW);
+      doc.setFillColor(180, 130, 60);
+      doc.roundedRect(x, barY, filled, bH, 1, 1, 'F');
+    };
+
+    const sectionBox = (title, drawFn) => {
+      chk(20);
+      // Amber section title
+      doc.setFontSize(11); doc.setTextColor(180, 130, 60);
+      doc.text(title, M, y.v); y.v += 6;
+      drawFn();
+      y.v += 3;
+      rule([46, 100, 55]);
+    };
+
+    // ── Page 1: Header ────────────────────────────────────────
+    doc.setFillColor(22, 43, 24);
+    doc.rect(0, 0, W, 30, 'F');
+    doc.setFontSize(20); doc.setTextColor(201, 169, 110);
+    doc.text('EduPath TPS', M, 14);
+    doc.setFontSize(8.5); doc.setTextColor(164, 184, 160);
+    const name = CP ? ((CP.first_name||'') + ' ' + (CP.last_name||'')).trim() : 'Student';
+    const grade = CP?.grade || '';
+    const section = CP?.school || '';
+    const dateStr = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+    doc.text(`${name}${grade ? '  ·  ' + grade : ''}${section ? ' ' + section : ''}  ·  ${dateStr}`, M, 21);
+    doc.setFontSize(7.5); doc.setTextColor(100, 140, 100);
+    doc.text('Career Assessment Report', M, 27);
+    y.v = 38;
+
+    // ── 1. Definitive Career Match ────────────────────────────
+    const topCareer = document.getElementById('r-def-career')?.textContent || '—';
+    const topPct    = document.getElementById('r-def-pct')?.textContent || '—';
+    const topScore  = parseInt(topPct) || 0;
+
+    // Gold banner box
+    doc.setFillColor(240, 224, 192);
+    doc.roundedRect(M, y.v, W - M * 2, 22, 3, 3, 'F');
+    doc.setDrawColor(201, 169, 110); doc.setLineWidth(0.4);
+    doc.roundedRect(M, y.v, W - M * 2, 22, 3, 3, 'S');
+    doc.setFontSize(7.5); doc.setTextColor(100, 70, 20);
+    doc.text('YOUR DEFINITIVE CAREER MATCH', M + 4, y.v + 5.5);
+    doc.setFontSize(14); doc.setTextColor(28, 54, 32);
+    doc.text(topCareer, M + 4, y.v + 13);
+    doc.setFontSize(22); doc.setTextColor(180, 130, 60);
+    doc.text(topPct, W - M - 22, y.v + 15);
+    y.v += 28;
+    rule();
+
+    // ── 2. Career Match Rankings (top 5) ─────────────────────
+    sectionBox('Career Match Rankings', () => {
+      document.querySelectorAll('#r-rks .rr').forEach((row, i) => {
+        chk(14);
+        const n = row.querySelector('.rrn')?.textContent?.trim() || '';
+        const p = row.querySelector('.rrp')?.textContent?.trim() || '';
+        const pNum = parseInt(p) || 0;
+        doc.setFontSize(9); doc.setTextColor(40, 85, 48);
+        doc.text(`${i + 1}. ${n}`, M, y.v);
+        doc.setFontSize(9); doc.setTextColor(180, 130, 60);
+        doc.text(p, W - M - 10, y.v);
+        y.v += 4;
+        bar(pNum, M, y.v, W - M * 2 - 18, 2.5);
+        y.v += 6;
+      });
+    });
+
+    // ── 3. Career Match Distribution (pie data as table) ─────
+    sectionBox('Career Match Distribution', () => {
+      const legendItems = document.querySelectorAll('#pie-legend .legend-item');
+      const PIE_COLORS_HEX = ['#c9a96e','#7ab87a','#e8745a','#6ba4c9','#c97ab8'];
+      legendItems.forEach((item, i) => {
+        chk(8);
+        const txt = item.textContent?.replace(/[^\x20-\x7E]/g, '').trim() || '';
+        const hex = PIE_COLORS_HEX[i] || '#c9a96e';
+        const r = parseInt(hex.slice(1,3),16), g2 = parseInt(hex.slice(3,5),16), b2 = parseInt(hex.slice(5,7),16);
+        doc.setFillColor(r, g2, b2);
+        doc.circle(M + 2, y.v - 1.5, 2, 'F');
+        doc.setFontSize(9); doc.setTextColor(40, 85, 48);
+        doc.text(txt, M + 6, y.v);
+        y.v += 6;
+      });
+    });
+
+    // ── 4. Personality Insights ───────────────────────────────
+    sectionBox('Personality Insights', () => {
+      const tags = [...document.querySelectorAll('#r-tgs .tg')].map(e => e.textContent).join('  ·  ');
+      body(tags, 9, [180, 130, 60]);
+      const ins = document.getElementById('r-ins')?.innerText?.replace(/\n+/g,' ').trim() || '';
+      body(ins, 9);
+    });
+
+    // ── 5. In-Depth Profile Analysis ─────────────────────────
+    sectionBox('In-Depth Profile Analysis', () => {
+      const adv = document.getElementById('r-adv')?.innerText || '';
+      body(adv, 9);
+    });
+
+    // ── 6. Job Opportunities (top 3 careers, 3 jobs each) ────
+    sectionBox('Job Opportunities From Your Top Careers', () => {
+      const jobCards = document.querySelectorAll('#r-jobs .card');
+      jobCards.forEach(card => {
+        // Career heading row
+        const careerTitle = card.querySelector('[style*="EB Garamond"]')?.textContent?.trim() || '';
+        const rankBadge   = card.querySelector('[style*="letter-spacing"]')?.textContent?.replace(/[^\x20-\x7E]/g,'').trim() || '';
+        if (careerTitle) {
+          chk(10);
+          doc.setFontSize(10); doc.setTextColor(180, 130, 60);
+          doc.text(`${rankBadge ? rankBadge + '  ' : ''}${careerTitle}`, M, y.v);
+          y.v += 6;
+        }
+        // Job tiles
+        card.querySelectorAll('[style*="border-radius:9px"]').forEach(tile => {
+          chk(16);
+          const titleEl = tile.querySelector('[style*="font-weight:600"]');
+          const descEl  = tile.querySelector('[style*="line-height"]');
+          const jobTitle = titleEl?.textContent?.trim() || '';
+          const jobDesc  = descEl?.textContent?.trim() || '';
+          if (jobTitle) {
+            doc.setFontSize(9); doc.setTextColor(201, 169, 110);
+            doc.text(`  • ${jobTitle}`, M + 2, y.v); y.v += 4.5;
+          }
+          if (jobDesc) {
+            const wrapped = doc.splitTextToSize(jobDesc, W - M * 2 - 8);
+            doc.setFontSize(8.5); doc.setTextColor(100, 140, 110);
+            doc.text(wrapped, M + 6, y.v);
+            y.v += wrapped.length * 4 + 2;
+          }
+        });
+        y.v += 3;
+      });
+    });
+
+    // ── 7. Colleges & Universities ───────────────────────────
+    sectionBox('Colleges & Universities You Can Apply To', () => {
+      const uniSection = document.getElementById('r-unis');
+      if (!uniSection) return;
+      uniSection.querySelectorAll('div[style*="margin-bottom"]').forEach(locBlock => {
+        chk(10);
+        const locRaw = locBlock.querySelector('div[style*="uppercase"]')?.textContent || '';
+        const locLabel = locRaw.replace(/[^\x20-\x7E]/g,'').trim();
+        if (locLabel) {
+          doc.setFontSize(9); doc.setTextColor(180, 130, 60);
+          doc.text(locLabel, M, y.v); y.v += 5;
+        }
+        locBlock.querySelectorAll('.card').forEach(card => {
+          chk(8);
+          const nm = card.querySelector('span:first-child')?.textContent?.trim() || '';
+          const rawBadge = card.querySelector('span:last-child')?.textContent?.trim() || '';
+          const badge = rawBadge.replace(/[^\x20-\x7E]/g,'').trim();
+          doc.setFontSize(9); doc.setTextColor(40, 85, 48);
+          doc.text(`  • ${nm}`, M + 2, y.v);
+          if (badge) {
+            doc.setFontSize(8); doc.setTextColor(100, 140, 100);
+            doc.text(`(${badge})`, W - M - 24, y.v);
+          }
+          y.v += 5.5;
+        });
+        y.v += 2;
+      });
+    });
+
+    // ── Footer on every page ─────────────────────────────────
+    const totalPages = doc.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFillColor(22, 43, 24);
+      doc.rect(0, 287, W, 10, 'F');
+      doc.setFontSize(7.5); doc.setTextColor(164, 184, 160);
+      doc.text('EduPath TPS  ·  www.tps.edu.ph  ·  Empowering Students of the Highest Rank', M, 293);
+      doc.setTextColor(100, 140, 100);
+      doc.text(`Page ${i} of ${totalPages}`, W - M - 14, 293);
     }
 
-    // Rankings
-    h('Career Match Rankings',12);
-    document.querySelectorAll('#r-rks .rr').forEach(row=>{
-      chk();
-      const n=row.querySelector('.rrn')?.textContent||'';
-      const p=row.querySelector('.rrp')?.textContent||'';
-      doc.setFontSize(10);doc.setTextColor(40,85,48);doc.text(n,M,y.v);
-      doc.setTextColor(180,130,60);doc.text(p,W-M-10,y.v);
-      y.v+=6;
-    });
-    line();
-
-    // Insights
-    chk(); h('Personality Insights',12);
-    const tags=[...document.querySelectorAll('#r-tgs .tg')].map(e=>e.textContent).join(' · ');
-    t(tags,10,[180,130,60]);
-    const ins=document.getElementById('r-ins')?.innerText||'';
-    t(ins);line();
-
-    chk(); h('In-Depth Profile Analysis',12);
-    const adv=document.getElementById('r-adv')?.innerText||'';
-    t(adv);line();
-
-    // Universities
-    chk(); h('University Suggestions',12);
-    const ucols=document.querySelectorAll('.uni-col');
-    ucols.forEach(col=>{
-      chk();
-      const lbl=(col.querySelector('.uni-col-label')?.textContent||'').replace(/[^\x00-\x7F]/g,'').trim();
-      doc.setFontSize(10);doc.setTextColor(180,130,60);doc.text(lbl,M,y.v);y.v+=5;
-      col.querySelectorAll('.uni-item').forEach(item=>{
-        chk();
-        const nm=item.childNodes[0]?.textContent?.trim()||'';
-        const sub=item.querySelector('span')?.textContent||'';
-        doc.setFontSize(9);doc.setTextColor(40,85,48);doc.text(`• ${nm}`,M+4,y.v);
-        doc.setTextColor(70,130,80);doc.text(sub,M+60,y.v);
-        y.v+=5;
-      });
-      y.v+=3;
-    });
-
-    // Footer
-    doc.setFontSize(8);doc.setTextColor(70,130,80);
-    doc.text('Generated by EduPath UAE · www.edupathuae.com',M,290);
-
-    doc.save(`EduPath_Report_${(name||'Student').replace(/ /g,'_')}_${new Date().getFullYear()}.pdf`);
-    toast('PDF downloaded! 📄','ok');
+    doc.save(`EduPath_Report_${(name || 'Student').replace(/ /g,'_')}_${new Date().getFullYear()}.pdf`);
+    toast('PDF downloaded!', 'ok');
   } catch(e) {
     console.error(e);
-    toast('PDF generation failed — try again','err');
+    toast('PDF generation failed — try again', 'err');
   }
-  btn.textContent='⬇ Download PDF'; btn.disabled=false;
+  btn.textContent = '⬇ Download PDF'; btn.disabled = false;
+}
+
+
+/* ══════════════════════════
+   ADMIN LOGIN
+══════════════════════════ */
+const ADMIN_USER = 'ADMIN@TPS';
+const ADMIN_PASS = 'TPSadminsupport@2014';
+let isAdmin = false;
+
+function switchLoginTab(tab) {
+  const student = document.getElementById('panel-student');
+  const admin   = document.getElementById('panel-admin');
+  const tS = document.getElementById('tab-student');
+  const tA = document.getElementById('tab-admin');
+  if(tab === 'student') {
+    student.style.display = 'block'; admin.style.display = 'none';
+    tS.style.background = 'var(--sand)'; tS.style.color = 'var(--fd)'; tS.style.fontWeight = '600';
+    tA.style.background = 'transparent'; tA.style.color = 'var(--t2)'; tA.style.fontWeight = 'normal';
+  } else {
+    student.style.display = 'none'; admin.style.display = 'block';
+    tA.style.background = 'var(--sand)'; tA.style.color = 'var(--fd)'; tA.style.fontWeight = '600';
+    tS.style.background = 'transparent'; tS.style.color = 'var(--t2)'; tS.style.fontWeight = 'normal';
+  }
+}
+
+function doAdminLogin() {
+  const u = document.getElementById('adm-u').value.trim();
+  const p = document.getElementById('adm-p').value;
+  const err = document.getElementById('adm-le');
+  if(u !== ADMIN_USER || p !== ADMIN_PASS) {
+    err.textContent = 'Invalid admin credentials.'; err.classList.add('show'); return;
+  }
+  err.classList.remove('show');
+  isAdmin = true;
+  goTo('admin-portal');
+  loadAdminPortal();
+}
+
+function doAdminLogout() {
+  isAdmin = false;
+  document.getElementById('adm-u').value = '';
+  document.getElementById('adm-p').value = '';
+  goTo('landing');
+}
+
+async function loadAdminPortal() {
+  // Show panels grid, hide section view
+  document.getElementById('adm-panels').style.display = 'grid';
+  document.getElementById('adm-section-view').style.display = 'none';
+}
+
+async function openSection(sectionName) {
+  document.getElementById('adm-panels').style.display = 'none';
+  document.getElementById('adm-section-view').style.display = 'block';
+  document.getElementById('adm-section-title').textContent = sectionName;
+  document.getElementById('adm-section-content').innerHTML = '<p style="color:var(--t3)">Loading students...</p>';
+  await getStudentDataBySchool(sectionName);
+}
+
+async function getStudentDataBySchool(sectionName) {
+  const content = document.getElementById('adm-section-content');
+
+  // sectionName = "Grade 12 D" → gradeNum = "12", secLetter = "D"
+  const parts = sectionName.split(' ');
+  const gradeNum = parts[1];        // "12"
+  const secLetter = parts[2] ? parts[2].toUpperCase() : ''; // "D"
+
+  // Use nested select to fetch profiles + their assessments in one query
+  const { data, error } = await SB
+    .from('profiles')
+    .select(`
+      id,
+      first_name,
+      last_name,
+      grade,
+      school,
+      assessments (
+        id,
+        top_match_career,
+        top_match_score,
+        created_at,
+        subjects,
+        extracurriculars,
+        leadership_role,
+        problem_solving_style,
+        thrive_environment,
+        primary_motivator,
+        career_interests,
+        curriculum
+      )
+    `)
+    .order('last_name', { ascending: true });
+
+  if (error) {
+    console.error("Error fetching admin data:", error);
+    content.innerHTML = `<p style="color:#f88">Error: ${error.message}</p>`;
+    return;
+  }
+
+  // Filter client-side (all rows fetched since admin RLS may restrict server-side filtering)
+  const profiles = (data || []).filter(p => {
+    const g = (p.grade || '').trim().toUpperCase();
+    const s = (p.school || '').trim().toUpperCase();
+    const gradeMatch = g.includes(gradeNum.toUpperCase());
+    const secMatch = s === secLetter
+      || s.endsWith(' ' + secLetter)
+      || s.endsWith('-' + secLetter)
+      || s.endsWith('- ' + secLetter);
+    return gradeMatch && secMatch;
+  });
+
+  console.log('[Admin] sectionName:', sectionName, '| gradeNum:', gradeNum, '| secLetter:', secLetter);
+  console.log('[Admin] Raw data from Supabase:', JSON.stringify((data||[]).map(p=>({name:p.first_name,grade:p.grade,school:p.school}))));
+  console.log('[Admin] Matched profiles:', profiles.length);
+
+  if (!profiles || profiles.length === 0) {
+    content.innerHTML = `
+      <div style="text-align:center;padding:32px 24px 16px;color:var(--t3)">
+        <p>No students matched <strong style="color:var(--sand)">${sectionName}</strong>.</p>
+        <p style="font-size:.82rem;margin-top:6px">Students appear here once they sign up and select this grade &amp; section.</p>
+      </div>
+      `;
+    return;
+  }
+
+  renderAdminTable(profiles, sectionName);
+}
+
+function renderAdminTable(students, sectionName) {
+  const content = document.getElementById('adm-section-content');
+
+  content.innerHTML = students.map(student => {
+    // assessments come pre-joined, sorted desc by created_at
+    const studentAssessments = (student.assessments || [])
+      .slice()
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    const fullName = ((student.first_name||'')+' '+(student.last_name||'')).trim() || 'Unnamed Student';
+    const initials = ((student.first_name||'')[0]||'') + ((student.last_name||'')[0]||'');
+
+    const assessmentCards = studentAssessments.length === 0
+      ? '<p style="color:var(--t3);font-size:.84rem;padding:12px 0">No assessments taken yet.</p>'
+      : studentAssessments.map(a => {
+          const date = new Date(a.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+          const top5 = scoreAll({
+            subjects: a.subjects||[], extras: a.extracurriculars||[],
+            lead: a.leadership_role, solve: a.problem_solving_style,
+            env: a.thrive_environment, motiv: a.primary_motivator,
+            interests: a.career_interests||[], workexp:[]
+          }).all.slice(0,5);
+
+          const uniDbLoc = UNI_DB['Philippines'] || UNI_DB['UAE'];
+          const uniDb = uniDbLoc[a.top_match_career] || uniDbLoc['DEFAULT'];
+
+          return `
+          <div style="background:var(--fm);border:1px solid var(--br);border-radius:12px;padding:22px 24px;margin-bottom:14px">
+            <!-- Report header -->
+            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--br);padding-bottom:12px;margin-bottom:16px">
+              <div>
+                <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:2px">EduPath TPS · Career Assessment Report</div>
+                <div style="font-family:'EB Garamond',serif;font-size:1.1rem;color:var(--t1)">${fullName}</div>
+              </div>
+              <div style="font-size:.78rem;color:var(--t3)">${date}</div>
+            </div>
+
+            <!-- Top match banner -->
+            <div style="background:linear-gradient(135deg,rgba(201,169,110,.15),rgba(46,84,53,.3));border:1px solid rgba(201,169,110,.4);border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:16px">
+              <div style="background:var(--sand);color:var(--fd);font-family:'EB Garamond',serif;font-size:1.6rem;font-weight:700;padding:8px 14px;border-radius:8px;white-space:nowrap">${a.top_match_score||'—'}%</div>
+              <div>
+                <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:2px">Definitive Career Match</div>
+                <div style="font-family:'EB Garamond',serif;font-size:1.2rem;color:var(--t1)">${a.top_match_career||'—'}</div>
+              </div>
+            </div>
+
+            <!-- Career rankings -->
+            <div style="margin-bottom:16px">
+              <div style="font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:10px">Career Match Rankings</div>
+              ${top5.map(m=>`
+                <div style="margin-bottom:8px">
+                  <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--t2);margin-bottom:4px"><span>${m.name}</span><span style="color:var(--sand);font-weight:600">${m.score}%</span></div>
+                  <div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:${m.score}%;background:linear-gradient(90deg,var(--fmu),var(--sand));border-radius:2px"></div></div>
+                </div>`).join('')}
+            </div>
+
+            <!-- Profile details -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+              <div style="background:rgba(12,26,13,.6);border:1px solid var(--br);border-radius:8px;padding:12px 14px">
+                <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:6px">Academic</div>
+                <div style="font-size:.82rem;color:var(--t2)">Curriculum: <span style="color:var(--t1)">${a.curriculum||'—'}</span></div>
+                <div style="font-size:.82rem;color:var(--t2);margin-top:3px">Subjects: <span style="color:var(--t1)">${(a.subjects||[]).join(', ')||'—'}</span></div>
+              </div>
+              <div style="background:rgba(12,26,13,.6);border:1px solid var(--br);border-radius:8px;padding:12px 14px">
+                <div style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:6px">Personality</div>
+                <div style="font-size:.82rem;color:var(--t2)">Solves: <span style="color:var(--t1)">${a.problem_solving_style||'—'}</span></div>
+                <div style="font-size:.82rem;color:var(--t2);margin-top:3px">Motivator: <span style="color:var(--t1)">${a.primary_motivator||'—'}</span></div>
+              </div>
+            </div>
+
+            <!-- University suggestions -->
+            <div>
+              <div style="font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sand);margin-bottom:10px">Colleges &amp; Universities You Can Apply To</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                ${[...uniDb.reach, ...uniDb.target, ...uniDb.safety].slice(0,3).map((u,i)=>`
+                <div style="background:rgba(12,26,13,.6);border:1px solid var(--br);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center">
+                  <span style="font-size:.8rem;color:var(--t1)">${u}</span>
+                  <span style="font-size:.68rem;color:var(--t3);background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.18);padding:2px 8px;border-radius:12px;white-space:nowrap;margin-left:8px">${i<uniDb.reach.length?'🎯 Reach':i<uniDb.reach.length+uniDb.target.length?'✅ Target':'🛡 Safety'}</span>
+                </div>`).join('')}
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+
+    const cardId = 'sc-'+student.id;
+    return `
+    <div style="background:var(--card);border:1px solid var(--br);border-radius:var(--r);margin-bottom:14px;overflow:hidden">
+      <button onclick="document.getElementById('${cardId}').style.display=document.getElementById('${cardId}').style.display==='none'?'block':'none';this.querySelector('.adm-chevron').style.transform=document.getElementById('${cardId}').style.display!=='none'?'rotate(180deg)':'rotate(0deg)'"
+        style="width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:18px 22px;text-align:left">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--fp);border:1.5px solid var(--sand);display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',serif;font-size:.9rem;color:var(--sand);font-weight:700;flex-shrink:0">${initials.toUpperCase()||'?'}</div>
+        <div style="flex:1">
+          <div style="font-family:'EB Garamond',serif;font-size:1.1rem;color:var(--t1)">${fullName}</div>
+          <div style="font-size:.78rem;color:var(--t3)">${studentAssessments.length} assessment${studentAssessments.length!==1?'s':''} · ${sectionName}</div>
+        </div>
+        <span class="adm-chevron" style="color:var(--sand);font-size:1rem;transition:transform .25s">▼</span>
+      </button>
+      <div id="${cardId}" style="display:none;padding:0 22px 20px">
+        ${assessmentCards}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function closeSection() {
+  document.getElementById('adm-section-view').style.display = 'none';
+  document.getElementById('adm-panels').style.display = 'grid';
 }
 
 /* ══════════════════════════
@@ -1798,15 +2451,37 @@ function tog(el){
   if(el.hasAttribute('data-r')) document.querySelectorAll(`.opt[data-g="${g}"]`).forEach(o=>o.classList.remove('sel'));
   el.classList.toggle('sel');
 }
+function togCareerOther(el){
+  // first deselect any other career_plan option
+  document.querySelectorAll('.opt[data-g="career_plan"]').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  const wrap = document.getElementById('career-plan-other-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('q-grading').value = document.getElementById('q-career-other').value || 'Others';
+  document.getElementById('q-career-other').addEventListener('input', function(){
+    document.getElementById('q-grading').value = this.value || 'Others';
+  }, {once:false});
+  // hide if user clicks a different option
+  document.querySelectorAll('.opt[data-g="career_plan"]:not([onclick*="togCareerOther"])').forEach(o=>{
+    o.addEventListener('click', ()=>{ wrap.style.display='none'; }, {once:false});
+  });
+}
+function togSloc(el){
+  const already=el.classList.contains('sel');
+  if(already){el.classList.remove('sel');return;}
+  const selected=document.querySelectorAll('.opt[data-g="sloc"].sel');
+  if(selected.length>=3){toast('You can select up to 3 study locations','err');return;}
+  el.classList.add('sel');
+}
 function gm(g){return[...document.querySelectorAll(`.opt[data-g="${g}"].sel`)].map(o=>o.dataset.v);}
 function gr(g){const e=document.querySelector(`.opt[data-g="${g}"].sel`);return e?e.dataset.v:null;}
 function gv(id){const e=document.getElementById(id);return e?e.value:'';}
 
 function resetForm(){
   document.querySelectorAll('.opt.sel').forEach(o=>o.classList.remove('sel'));
-  document.querySelectorAll('.subj-chk.on').forEach(c=>toggleSubj(c,''));
-  document.getElementById('q-cur').value='';
-  document.getElementById('q-grading').value='';
+  document.querySelectorAll('.subj-grade').forEach(s=>s.value='');
+  const qg = document.getElementById('q-grading'); if(qg) qg.value='';
+  const ow = document.getElementById('career-plan-other-wrap'); if(ow) ow.style.display='none';
   setStep(1);
 }
 
